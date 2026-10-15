@@ -1,0 +1,578 @@
+<!doctype html>
+<!-- Eigrutel Lab - Atelier d'outils libres pour la bande dessinée Programme conçu et développé par Simon Léturgie dans le cadre d'Eigrutel BD Academy. Nom : webtooner Version : 1.0.0 Date : 15-10-2026
+JJ Code : GNU AGPL v3.0 ou version ultérieure. Documentation et modèles : CC BY-SA 4.0,
+sauf mention contraire. Marques, logos et signes distinctifs Eigrutel / Eigrutel Lab / Eigrutel BD Academy : réservés. -->
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>webtooner  :  Eigrutel Lab</title>
+<link rel="icon" type="image/png" href="favicon/favwebtooncut.png">
+<link rel="apple-touch-icon" href="favicon/favwebtooncut.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="webtooner">
+<meta name="application-name" content="webtooner">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#F4F1EA"><style>
+:root{--ink:#1f3a44;--paper:#f4f1ea;--card:#fff;--line:#ddd8cf;--soft:#f8f8f6;--accent:#a63d40}*{box-sizing:border-box}body{margin:0;font:14px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background:var(--paper);color:#292929}header{max-width:1500px;margin:auto;padding:20px 22px;display:flex;align-items:center;justify-content:space-between}h1{margin:0;font-size:29px;letter-spacing:.1em;color:var(--ink)}header p{margin:0;color:#6a6a65;font-size:12px}.bar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}button,.btn{border:1px solid #d5cec4;border-radius:9px;background:#fff;color:#333;font:inherit;font-weight:650;padding:9px 12px;cursor:pointer;text-decoration:none;display:inline-block}button:hover,.btn:hover{border-color:var(--ink)}button:disabled{opacity:.4;cursor:default}.primary{background:var(--ink);color:white;border-color:var(--ink)}.red{background:var(--accent);color:white;border-color:var(--accent)}.small{font-size:12px;padding:5px 9px}.danger{color:#9c3035}main{max-width:1500px;margin:auto;padding:0 20px 25px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:16px}.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;min-width:0}h2{font-size:16px;margin:0 0 12px;color:var(--ink)}.head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.muted{color:#75756d;font-size:12px}.tools{margin-bottom:12px}input,select{font:inherit;width:100%;padding:8px;border:1px solid var(--line);border-radius:7px;background:#fff;color:#333}input[type=checkbox]{width:auto}input[type=range]{padding:0}input[type=color]{height:38px;padding:3px}label{display:block;margin:10px 0 4px;font-size:12px;color:#5d5d57}.check{display:flex;align-items:center;gap:7px}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}#stage{height:53vh;min-height:300px;overflow:auto;border:1px solid var(--line);background:#e6e3dd;border-radius:10px;position:relative;padding:16px;overscroll-behavior:contain}#workspace{position:relative;line-height:0;touch-action:none;user-select:none;margin:0 auto;overflow:hidden;cursor:crosshair}#source{display:block;width:100%;height:100%;pointer-events:none}#selection{position:absolute;border:2px solid var(--accent);box-shadow:0 0 0 100000px #0005;touch-action:none;cursor:move}#selection::after{content:'';position:absolute;inset:0;border:1px solid #fff9;pointer-events:none}.handle{position:absolute;width:16px;height:16px;border:2px solid white;border-radius:4px;background:var(--accent);transform:translate(-50%,-50%);z-index:2;touch-action:none}.handle[data-h=nw]{left:0;top:0;cursor:nwse-resize}.handle[data-h=n]{left:50%;top:0;cursor:ns-resize}.handle[data-h=ne]{left:100%;top:0;cursor:nesw-resize}.handle[data-h=w]{left:0;top:50%;cursor:ew-resize}.handle[data-h=e]{left:100%;top:50%;cursor:ew-resize}.handle[data-h=sw]{left:0;top:100%;cursor:nesw-resize}.handle[data-h=s]{left:50%;top:100%;cursor:ns-resize}.handle[data-h=se]{left:100%;top:100%;cursor:nwse-resize}#empty{padding:85px 20px;text-align:center;color:#76766e}#stage.over{outline:3px dashed var(--accent)}.coords{display:grid;grid-template-columns:repeat(4,minmax(60px,1fr));gap:10px;max-width:520px}.coords label{margin:8px 0}.zoom{display:flex;align-items:center;gap:8px;max-width:280px;margin-top:8px}.zoom input{width:140px}.status{padding:11px 15px;border-radius:9px;background:#f0f3f2;color:var(--ink);font-size:13px;margin-top:12px}.status.error{background:#fae5e5;color:#922f35}#previewBox{background:repeating-conic-gradient(#e7e7e3 0% 25%,#fff 0% 50%) 50%/16px 16px;border:1px solid var(--line);border-radius:9px;padding:8px;min-height:120px;display:grid;place-items:center;margin:10px 0}#preview{max-width:100%;max-height:200px;width:auto;height:auto}#memoryPanel{grid-column:1/-1}#memory{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;max-height:470px;overflow:auto}.case{border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0;background:var(--soft)}.case img{width:100%;height:125px;object-fit:contain;display:block;background:repeating-conic-gradient(#e9e9e5 0% 25%,#fff 0% 50%) 50%/16px 16px;border-radius:6px}.case input{margin:8px 0;font-size:12px}.case .bar{gap:5px}.case.dragging{opacity:.4}.stat{font-size:12px;padding:10px;background:var(--soft);border:1px solid var(--line);border-radius:8px;margin:10px 0}#exportResult{padding:12px;background:#edf3ee;margin-top:12px;border-radius:9px}#download{display:block;text-align:center;margin-top:8px}progress{width:100%;accent-color:var(--ink)}dialog{border:1px solid var(--line);border-radius:15px;max-width:600px;width:92vw;max-height:85vh;overflow:auto;padding:23px;background:var(--paper);color:#333}dialog::backdrop{background:#0008}footer{text-align:center;padding:0 15px 25px;color:#777;font-size:11px}[hidden]{display:none!important}:focus-visible{outline:3px solid #bd843d;outline-offset:2px}@media(max-width:900px){main{grid-template-columns:1fr}#memoryPanel{grid-column:auto}aside .row{grid-template-columns:1fr 1fr}#stage{height:52vh}header{padding:15px}.coords{max-width:none}}@media(pointer:coarse){.handle{width:22px;height:22px}}
+
+/* Ajustements de mise en page 1.0.1 */
+header{padding:9px 22px;gap:12px;min-height:50px}
+header .brand{display:flex;align-items:baseline;gap:13px;flex-wrap:wrap}
+header h1{font-size:22px;line-height:1.1}
+header .bar{flex-wrap:nowrap;gap:6px}
+header button{padding:4px 9px;min-height:30px;font-size:12px}
+#cropControls>.bar{align-items:center;gap:8px 18px}
+.coords{flex:1 1 350px;min-width:0;width:100%;max-width:520px}
+.coords input{min-width:0}
+.zoom{flex:0 1 420px;width:420px;max-width:100%;min-width:0;flex-wrap:wrap;gap:8px;margin-top:8px}
+.zoom input{flex:1 1 90px;min-width:60px;max-width:140px;width:auto}
+.zoom output,.zoom>span{flex:0 0 auto;white-space:nowrap}
+.zoom button{flex:0 0 auto;white-space:nowrap}
+#export{display:block;width:100%;text-align:center}
+.stored-count{font-size:12px;font-weight:650;color:var(--ink);padding:5px 0}
+@media(max-width:900px){header{padding:8px 15px}.coords{max-width:100%}.zoom{flex-basis:100%;width:100%}}
+
+/* Charte commune Eigrutel Lab / Strip */
+:root{color-scheme:light;--paper:#F4F1EA;--card:#FAFAF7;--line:#D8D0C4;--soft:#F4F1EA;--ink:#1F3A44;--accent:#A63D40;--text:#243033;--muted:#6F7473;--ocre:#C47A2C}
+body{color:var(--text)}
+header{max-width:1460px;margin:12px auto 16px;padding:10px 16px;border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:0 5px 18px #24303312}
+header .brand{flex-direction:column;align-items:flex-start;gap:3px}
+header h1{color:var(--ink);font-size:23px;font-weight:900;letter-spacing:-.045em;line-height:1.1}
+header .brand>.muted{order:-1;color:var(--accent);font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase}
+header button{min-height:34px}
+#goAssembly{background:var(--ink);color:#fff;border-color:var(--ink)}
+#help{width:34px;padding:0;border-radius:50%;background:#F3E1CC;border-color:#DDC7AA;color:#76501F;font-family:Georgia,serif;font-style:italic;font-size:20px}
+button,.btn{border-color:var(--line);border-radius:9px}
+button:hover,.btn:hover{border-color:var(--ink)}
+button:disabled{cursor:default}
+.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.red{background:var(--accent);color:#fff;border-color:var(--accent)}
+.muted,label{color:var(--muted)}
+input,select{color:var(--text);min-width:0}
+input[type=range],input[type=checkbox],progress{accent-color:var(--ink)}
+.panel{background:var(--card)}
+#sourceTools{padding:10px;background:#E4ECEE;border:1px solid #C8D6D9;border-top:3px solid var(--ink);border-radius:10px}
+#sourceTools .btn{background:var(--accent);border-color:var(--accent)}
+#stage{background:#ECEBE7}
+#memoryPanel{border-top:3px solid var(--ocre)}
+#assembly{border-top:3px solid var(--ink)}
+.status{background:#E4ECEE;color:var(--ink)}
+.status.error{background:#F0DADB;color:#7F2D30}
+#exportResult,#a-result{background:#E9F0E9;border:1px solid #C4D6C6}
+dialog{color:var(--text);background:var(--card)}
+dialog h2{color:#7F2D30}
+:focus-visible{outline-color:var(--ocre)}
+.spacing-control{margin:16px 0;padding:12px;border:1px solid #DDC7AA;border-radius:10px;background:#F3E1CC}
+.spacing-control>label{margin:0 0 8px;font-weight:750;color:#76501F}
+.spacing-row{display:grid;grid-template-columns:minmax(0,1fr) 84px;align-items:center;gap:12px}
+.spacing-control input[type=range]{accent-color:var(--ocre)}
+.spacing-control p{margin:8px 0 0;line-height:1.45;color:#76501F}
+#a-strip img+img{margin-top:var(--panel-gap,0%)}
+.eba-footer{max-width:1460px;margin:10px auto 0;padding:18px 16px 24px;border-top:1px solid var(--line);text-align:center;color:var(--muted)}
+.eba-footer nav{display:flex;justify-content:center;gap:12px 22px;flex-wrap:wrap}
+.eba-footer a{color:var(--muted);text-decoration:none;font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase}
+.eba-footer a:hover{color:var(--accent)}
+.eba-footer p{font-size:11px;line-height:1.7;margin:9px 0 0}
+@media(max-width:1500px){header{margin-left:20px;margin-right:20px}}
+@media(max-width:480px){header{margin:8px 10px 12px}header h1{font-size:21px}header .bar{gap:5px}header button{padding:4px 7px}}
+#assembly{grid-column:1/-1;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:20px;scroll-margin-top:16px}#a-viewport{height:65vh;min-height:300px;overflow:auto;padding:16px;background:#ECEBE7;border:1px solid var(--line);border-radius:10px}#a-strip{max-width:440px;margin:auto;line-height:0}#a-strip img{width:100%;height:auto;display:block}#a-empty{text-align:center;padding:60px 10px;color:var(--muted)}#a-warning{color:#8B4E18;font-size:12px;margin:10px 0}#a-result{padding:12px;border-radius:9px;margin-top:12px}#a-save{display:block;text-align:center;margin-top:10px}#a-export{width:100%}#a-status{margin-top:12px;overflow-wrap:anywhere}#memoryPanel .head{flex-wrap:wrap}.assembly-description{margin-top:0}.case input{min-width:0}@media(max-width:900px){#assembly{grid-template-columns:1fr}}@media(max-width:480px){main{padding:0 10px 20px}.panel{padding:12px}.coords{grid-template-columns:repeat(2,minmax(0,1fr))}header{padding:9px 12px}header .brand{gap:6px}header .brand>.muted{font-size:8px}}
+
+/* webtooner 1.3  :  cadrage et édition en focus */
+#cropControls{margin-bottom:12px}
+#cropControls .crop-toolbar{gap:10px 20px;align-items:center}
+#cropControls .coords{display:grid;grid-template-columns:minmax(70px,1fr) minmax(70px,1fr) 42px;flex:0 1 310px;gap:8px;align-items:end;max-width:310px}
+#cropControls .coords label{margin:0}
+#lockSelection{width:42px;height:38px;padding:0;font-size:20px;background:#F3E1CC;border-color:#DDC7AA}
+#lockSelection[aria-pressed=true]{background:var(--ink);border-color:var(--ink)}
+#workspace.is-locked .handle{display:none}
+#cropControls .zoom{flex:1 1 310px;width:auto;max-width:none;margin:0;gap:8px}
+.zoom label{margin:0;color:var(--text)}
+.zoom input{min-width:70px}
+.case-preview{display:block;width:100%;padding:0;border:0;background:none;border-radius:6px;cursor:zoom-in}
+.case-preview:hover{outline:2px solid var(--ocre);outline-offset:2px}
+.case.is-spacer{background:#F3E1CC;border-style:dashed}
+.case.is-spacer img{height:40px;object-fit:fill}
+.case.is-spacer .spacer-label{height:85px;display:grid;place-items:center;color:#76501F;font-size:12px}
+#focusEditor{width:min(1150px,96vw);max-width:1150px;max-height:94vh;padding:18px}
+#focusEditor .head{margin-bottom:8px}
+#focusTitle{overflow-wrap:anywhere}
+#focusEditor #stage{height:50vh;min-height:200px}
+.focus-tools{margin-bottom:12px}
+.focus-actions{justify-content:flex-end;margin-top:14px;position:sticky;bottom:0;background:var(--card);padding:10px 0 0}
+#focusStatus.error{color:#7F2D30}
+@media(max-width:480px){#cropControls .coords{flex:1 1 100%;max-width:none}#cropControls .zoom{flex-basis:100%}#focusEditor{padding:12px}#focusEditor #stage{height:42vh}.focus-actions button{flex:1}}
+
+/* 1.4  :  mentions, filigrane et projet */
+#lockSelection{width:38px;height:38px;display:inline-grid;place-items:center;border:1px solid rgba(31,58,68,.14);border-radius:999px;background:rgba(31,58,68,.045);color:#1F3A44;line-height:1;box-shadow:none;padding:0}
+#lockSelection svg{width:19px;height:19px;display:block;fill:currentColor;stroke:none}
+#lockSelection:hover{background:rgba(31,58,68,.09);border-color:rgba(31,58,68,.26)}
+#lockSelection[aria-pressed=true]{background:rgba(166,61,64,.10);border-color:rgba(166,61,64,.28);color:#A63D40}
+#lockSelection[aria-pressed=true]:hover{background:rgba(166,61,64,.15);border-color:rgba(166,61,64,.38)}
+#lockSelection:focus-visible{outline:3px solid var(--ocre);outline-offset:2px}
+.project-bar{grid-column:1/-1;display:flex;gap:8px 16px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:0 2px;font-size:12px;color:var(--muted)}
+#saveStatus[data-state=saved]{color:#37634D}#saveStatus[data-state=error]{color:#7F2D30;font-weight:700}
+.status:empty,#a-status:empty{display:none}
+.assembly-section{border-top:1px solid var(--line);padding-top:12px;margin-top:16px}
+.assembly-section .head{margin-bottom:6px}.assembly-section .head label{font-weight:750;color:var(--ink);margin:0}
+textarea{width:100%;resize:vertical;font:inherit;color:var(--text);background:white;border:1px solid var(--line);border-radius:8px;padding:9px}
+.rights-template{padding:12px 0;border-top:1px solid var(--line)}.rights-template h3{font-size:14px;margin:0 0 8px;color:var(--ink)}.rights-template .bar{margin-top:8px}
+#a-strip .a-row{position:relative;width:100%;line-height:0;overflow:hidden}
+#a-strip .a-row>img{position:absolute;top:0;height:100%;display:block;max-width:none;margin:0}
+#a-strip svg{display:block;width:100%;height:auto;overflow:hidden;pointer-events:none}
+#a-strip .a-row>svg{position:absolute;inset:0;width:100%;height:100%}
+#a-strip img+img{margin-top:0}
+#a-status.error{color:#7F2D30;font-weight:650}
+</style></head><body>
+<header><div class="brand"><h1>webtooner</h1><span class="muted">Eigrutel Lab</span></div><div class="bar"><button id="goAssembly" data-t="assemblyJump">Assemblage</button><button id="help" aria-label="Mode d’emploi">i</button><button id="language">EN</button></div></header>
+<main><div class="project-bar"><span id="saveStatus" role="status" aria-live="polite"></span><div class="bar"><button id="saveProject" class="small" data-t="saveProject">Télécharger le projet</button><label class="btn small" style="margin:0"><span data-t="openProject">Ouvrir un projet</span><input type="file" id="projectFile" accept=".webtooner,application/json" hidden></label><button id="previousProject" class="small" data-t="previousProject" disabled>Version précédente</button></div></div><section class="panel"><div class="head"><h2 data-t="sourceTitle">1. Délimiter une case</h2><span id="sourceInfo" class="muted"></span></div><div class="bar tools" id="sourceTools"><label class="btn primary" style="margin:0;color:white"><span data-t="load">Charger une image</span><input id="file" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" hidden></label><button id="newRect" data-t="newRect">Nouvelle zone</button><button id="all" data-t="all">Image entière</button><button id="store" class="red" data-t="store" disabled>Mémoriser la case</button><span id="storedCount" class="stored-count" role="status" aria-live="polite">0 case mémorisée</span></div>
+<div id="cropHome"><div id="cropSurface">
+<div id="cropControls"><div class="bar crop-toolbar">
+<div class="coords"><label><span data-t="width">Largeur</span><input id="w" type="number" min="1" step="1" value="1"></label><label><span data-t="height">Hauteur</span><input id="h" type="number" min="1" step="1" value="1"></label><button id="lockSelection" type="button" aria-pressed="false" aria-label="Verrouiller les dimensions" title="Verrouiller les dimensions"></button></div>
+<div class="zoom"><label for="zoom">Zoom</label><input id="zoom" type="range" min="25" max="400" value="100"><output id="zoomValue">100 %</output><button id="pan" class="small" data-t="pan" aria-pressed="false">Déplacer la vue</button></div>
+</div></div>
+<div id="stage"><div id="empty" data-t="drop">Charge ou dépose une image ici.</div><div id="workspace" hidden><img id="source" alt=""><div id="selection" tabindex="0" role="group" aria-label="Zone de découpe"><i class="handle" data-h="nw"></i><i class="handle" data-h="n"></i><i class="handle" data-h="ne"></i><i class="handle" data-h="e"></i><i class="handle" data-h="se"></i><i class="handle" data-h="s"></i><i class="handle" data-h="sw"></i><i class="handle" data-h="w"></i></div></div></div>
+
+</div></div>
+<div id="status" class="status" role="status" aria-live="polite" data-t="ready">Prêt. Les cases mémorisées sont conservées quand tu charges une autre image.</div></section>
+<aside class="panel"><h2 data-t="previewTitle">Aperçu de la découpe</h2><div id="previewBox"><canvas id="preview" width="1" height="1"></canvas></div><div id="cropInfo" class="muted"></div><h2 style="margin-top:22px" data-t="exportTitle">2. Exporter les cases</h2><div id="exportOptions"><label data-t="quality">Qualité</label><select id="profile"><option value="web" data-t="web">Réseau : réduction si nécessaire</option><option value="print" data-t="print">Impression : pixels d’origine, 300 dpi</option></select><label id="edgeLabel"><span data-t="edge">Grand côté maximal (px)</span><input id="edge" type="number" min="64" max="8192" step="1" value="1080"></label><div class="row"><div><label data-t="format">Format</label><select id="format"><option value="jpeg">JPG</option><option value="png">PNG</option></select></div><div id="jpegOption"><label><span data-t="jpegQuality">Qualité JPG</span> <output id="qValue">92 %</output></label><input id="jpegQuality" type="range" min="60" max="100" value="92"></div></div>
+<label class="check"><input id="margin" type="checkbox"><span data-t="margin">Ajouter une marge</span></label><div id="marginOptions" hidden><label><span data-t="marginSize">Marge sur chaque côté</span> (<span id="marginUnit">px</span>)<input id="marginSize" type="number" min="0" max="500" step="1" value="20"></label></div><label><span data-t="background">Couleur de fond / marge</span><input id="background" type="color" value="#ffffff"></label><label class="check" id="alphaOption" hidden><input id="alpha" type="checkbox"><span data-t="alpha">Conserver la transparence</span></label><label><span data-t="zipName">Nom du lot</span><input id="batchName" value="webtooner-cases"></label></div><div id="exportInfo" class="stat"></div><button id="export" class="primary" data-t="export" disabled>Exporter toutes les cases (ZIP)</button><button id="cancel" hidden data-t="cancel">Annuler</button><progress id="progress" hidden value="0" max="1"></progress><div id="exportResult" hidden><span id="resultText"></span><a id="download" class="btn primary" download data-t="download">Télécharger</a></div></aside>
+<section class="panel" id="memoryPanel"><div class="head"><div><h2 style="margin-bottom:2px" data-t="memory">Cases mémorisées</h2><span id="memoryInfo" class="muted"></span></div><div class="bar"><label class="btn small" style="margin:0"><span data-t="importPanels">Ajouter des images entières</span><input id="panelFiles" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" multiple hidden></label><button id="addSpace" class="small" data-t="addSpace">+ espace</button><button id="clear" class="small danger" data-t="clear">Vider la mémoire</button></div></div><div id="memory"></div></section><section class="panel" id="assembly"><div><div class="head"><h2 data-t="assemblyTitle">3. Assemblage Webtoon</h2><span id="a-count" class="muted"></span></div><div id="a-viewport"><div id="a-empty" data-t="none">Aucune case mémorisée.</div><div id="a-strip"></div></div></div><div><div id="a-options"><label><span data-t="stripWidth">Largeur du bandeau (px)</span><input id="a-width" type="number" min="1" max="8192" value="800"></label><div class="bar"><button class="small" data-aw="800">800 px</button><button class="small" data-aw="1080">1080 px</button><button class="small" id="a-original" data-t="originalWidth">Largeur de la première case</button></div>
+<div class="spacing-control">
+<label for="a-gap" id="a-gapLabel" data-t="panelSpacing">Espacement des cases (px)</label>
+<div class="spacing-row"><input id="a-gapRange" type="range" min="0" max="1000" step="1" value="0" aria-labelledby="a-gapLabel"><input id="a-gap" type="number" min="0" max="8192" step="1" value="0"></div>
+
+</div>
+<label><span data-t="format">Format</span><select id="a-format"><option value="jpeg">JPG</option><option value="png">PNG</option></select></label><div id="a-qualityGroup"><label><span data-t="jpegQuality">Qualité JPG</span> <output id="a-qualityValue"></output><input id="a-quality" type="range" min="60" max="100" value="92"></label></div><label><span data-t="background">Couleur de fond / marge</span><input id="a-background" type="color" value="#ffffff"></label><label class="check" id="a-transparentGroup" hidden><input id="a-transparent" type="checkbox"><span data-t="alpha">Conserver la transparence</span></label><label><span data-t="filename">Nom du fichier</span><input id="a-filename" value="webtoon-bandeau"></label>
+<div class="assembly-section"><label for="a-exportMode" data-t="exportMode">Export du bandeau</label><select id="a-exportMode"><option value="whole" data-t="wholeStrip">Bandeau entier</option><option value="pieces" data-t="stripPieces">En plusieurs morceaux (ZIP)</option></select><div id="a-pieceOptions" hidden><label for="a-target" data-t="exportTarget">Préréglage</label><select id="a-target"><option value="custom" data-t="customTarget">Personnalisé</option><option value="webtoon">WEBTOON (800 × 1280 px)</option><option value="tapas">Tapas (largeur 940 px)</option></select><label><span data-t="pieceHeight">Hauteur des morceaux (px)</span><input id="a-pieceHeight" type="number" min="1" max="8192" step="1" value="1280"></label></div></div><div class="assembly-section"><div class="head"><label for="a-rights" data-t="rightsLabel">Droits / copyright / CC</label><button id="rightsExamples" class="small" type="button" data-t="examples">Formulations</button></div>
+<textarea id="a-rights" rows="3" maxlength="2000" aria-label="Droits / copyright / CC"></textarea>
+<div class="row"><label><span data-t="textSize">Taille du texte (px)</span><input id="a-rightsSize" type="number" min="8" max="96" value="18"></label><label><span data-t="textColour">Couleur du texte</span><input id="a-rightsColour" type="color" value="#243033"></label></div></div>
+<div class="assembly-section"><label class="check"><input id="a-watermarkOn" type="checkbox"><span data-t="watermark">Filigrane sur les cases</span></label>
+<label for="a-watermark" data-t="watermarkText">Texte du filigrane</label><input id="a-watermark" maxlength="180" type="text" value="">
+<label for="a-watermarkOpacity"><span data-t="opacity">Opacité</span> <output id="a-watermarkValue">20 %</output></label><input id="a-watermarkOpacity" type="range" min="5" max="80" value="20">
+<div class="row"><label><span data-t="textSize">Taille du texte (px)</span><input id="a-watermarkSize" type="number" min="8" max="240" value="48"></label><label><span data-t="textColour">Couleur du texte</span><input id="a-watermarkColour" type="color" value="#1f3a44"></label></div></div>
+</div><div class="stat" id="a-stats"></div><div id="a-warning"></div><button id="a-fitJpg" class="small" hidden data-t="fitJpg">Réduire la largeur pour le JPG</button><button id="a-export" class="primary" disabled data-t="createStrip">Créer le bandeau</button><button id="a-cancel" hidden data-t="cancel">Annuler</button><progress id="a-progress" hidden max="1" value="0"></progress><div id="a-result" hidden><div id="a-resultInfo"></div><a id="a-save" class="btn primary" download data-t="download">Télécharger</a></div><div id="a-status" role="status" aria-live="polite" class="muted"></div></div></section></main>
+<dialog id="focusEditor" aria-labelledby="focusTitle">
+<div class="head"><h2 id="focusTitle"></h2><button id="focusClose" type="button" data-t="closeEditor">Fermer</button></div>
+
+<div class="bar focus-tools"><button id="focusNew" data-t="newRect">Nouvelle zone</button><button id="focusAll" data-t="all">Image entière</button></div>
+<div id="focusHost"></div>
+<div id="focusStatus" class="muted" role="status" aria-live="polite"></div>
+<div class="bar focus-actions"><button id="focusCancel" data-t="cancel">Annuler</button><button id="focusApply" class="primary" data-t="applyCrop">Appliquer le recadrage</button></div>
+</dialog>
+<dialog id="rightsDialog" aria-labelledby="rightsTitle"><div class="head"><h2 id="rightsTitle" data-t="rightsLabel">Droits / copyright / CC</h2><button id="closeRights" data-t="closeEditor">Fermer</button></div><div id="rightsTemplates"></div><a href="https://creativecommons.org/chooser/" target="_blank" rel="noopener" data-t="ccChooser">Choisir une licence Creative Commons</a></dialog>
+<dialog id="manual"><div class="head"><h2 data-t="manualTitle">webtooner : mode d’emploi</h2><button id="closeHelp">×</button></div><div id="manualText"></div></dialog><footer class="eba-footer"><a href="https://www.stripmee.com/eigrutel-bd-academy-2/" target="_blank" rel="noopener">Eigrutel BD Academy</a></footer>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const words={
+sourceTitle:['1. Délimiter une case','1. Select a panel'],load:['Charger une image','Load image'],newRect:['Nouvelle zone','New selection'],all:['Image entière','Whole image'],store:['Mémoriser la case','Store panel'],drop:['Charge ou dépose une image ici.','Load or drop an image here.'],width:['Largeur','Width'],height:['Hauteur','Height'],fit:['Ajuster','Fit'],gesture:['Déplace le cadre rouge ou ses poignées. « Nouvelle zone » permet de tracer un autre rectangle. Flèches du clavier : déplacement de 1 px, Maj : 10 px.','Move the red frame or its handles. Use “New selection” to draw another rectangle. Arrow keys: move 1 px; Shift: 10 px.'],ready:['Prêt. Les cases mémorisées sont conservées quand tu charges une autre image.','Ready. Stored panels remain available when you load another image.'],previewTitle:['Aperçu de la découpe','Crop preview'],exportTitle:['2. Exporter les cases','2. Export panels'],quality:['Qualité','Quality'],web:['Réseau : réduction si nécessaire','Web : downsize if needed'],print:['Impression : pixels d’origine, 300 dpi','Print : original pixels, 300 dpi'],edge:['Grand côté maximal (px)','Maximum long edge (px)'],format:['Format','Format'],jpegQuality:['Qualité JPG','JPG quality'],margin:['Ajouter une marge','Add margin'],marginSize:['Marge sur chaque côté','Margin on each side'],background:['Couleur de fond / marge','Background / margin colour'],alpha:['Conserver la transparence','Preserve transparency'],zipName:['Nom du lot','Batch name'],export:['Exporter toutes les cases (ZIP)','Export all panels (ZIP)'],cancel:['Annuler','Cancel'],download:['Télécharger','Download'],memory:['Cases mémorisées','Stored panels'],clear:['Vider la mémoire','Clear memory'],session:['Mémoire de session : exporte tes cases avant de fermer la page. Glisse les cartes ou utilise les flèches pour les ordonner.','Session memory: export your panels before closing. Drag cards or use arrows to reorder them.'],manualTitle:['webtooner : mode d’emploi','webtooner : instructions'],webHint:['Pas d’agrandissement ni de format imposé : les proportions de chaque case restent libres.','No upscaling or fixed format: each panel keeps its proportions.'],printHint:['Aucun agrandissement. Résolution 300 dpi inscrite dans le fichier. La taille imprimable dépend des pixels de la case.','No upscaling. Files include 300 dpi resolution metadata. Print size depends on the panel’s pixel dimensions.'],none:['Aucune case mémorisée.','No stored panels.'],caseCount:['case(s) mémorisée(s)','stored panel(s)'],selected:['Sélection','Selection'],printSize:['à 300 dpi','at 300 dpi'],trace:['Trace un rectangle sur l’image.','Draw a rectangle on the image.'],loaded:['Image chargée. Ajuste la zone puis mémorise la case.','Image loaded. Adjust the selection and store the panel.'],stored:['Case mémorisée. Tu peux sélectionner une autre zone ou charger une autre image.','Panel stored. Select another area or load another image.'],loading:['Chargement…','Loading…'],processing:['Préparation…','Preparing…'],done:['Export prêt. Clique sur Télécharger.','Export ready. Click Download.'],cancelled:['Opération annulée.','Operation cancelled.'],badImage:['Image illisible. Choisis un JPG, PNG ou WebP.','Cannot read image. Choose JPG, PNG or WebP.'],limit:['Image trop grande pour cet export. Réduis la zone ou choisis le profil Réseau.','Image too large for this export. Select a smaller area or use the Web profile.'],badSettings:['Vérifie les réglages de taille et de marge.','Check size and margin settings.'],confirmClear:['Supprimer toutes les cases mémorisées de cette session ?','Remove all stored panels from this session?'],remove:['Retirer','Remove'],up:['Monter','Move up'],down:['Descendre','Move down'],one:['Exporter cette case','Export this panel'],name:['Nom de la case','Panel name'],blank:['La case sélectionnée est vide.','The selected panel is empty.'],noCanvas:['Le navigateur ne peut pas produire cette image. Réduis la taille.','The browser cannot create this image. Reduce the size.'],saveHint:['Sans marge ajoutée','No added margin'],withMargin:['Avec marge','With margin'],source:['Source','Source']};
+words.pan=['Déplacer la vue','Pan view'];words.panHint=['Déplace la vue au doigt ; désactive ce bouton pour ajuster la sélection.','Pan the image with your finger; switch this off to edit the selection.'];
+let panning=false,selectionLocked=false,focusSession=null;
+let lang=0;try{lang=localStorage.getItem('cutter-language')==='en'?1:0;}catch{}
+const t=k=>words[k]?.[lang]||k;let image=null,sourceURL=null,sourceBlob=null,sourceName='',rect={x:0,y:0,w:1,h:1},cases=[],busy=false,cancelled=false,drag=null,drawMode=false,dragCard=null,resultURL=null,nextId=1;
+function say(text,error=false){$('status').textContent=text;$('status').classList.toggle('error',error);}
+function invalidate(){window.projectStore?.schedule();window.assembly?.invalidate();if(resultURL)URL.revokeObjectURL(resultURL);resultURL=null;$('exportResult').hidden=true;}
+function clamp(n,min,max){return Math.max(min,Math.min(max,n));}
+function normalize(r,width=image?.naturalWidth||1,height=image?.naturalHeight||1){const x=clamp(Math.round(r.x)||0,0,width-1),y=clamp(Math.round(r.y)||0,0,height-1);return {x,y,w:clamp(Math.round(r.w)||1,1,width-x),h:clamp(Math.round(r.h)||1,1,height-y)};}
+function setBusy(v){busy=v;if(!v)window.projectStore?.schedule();for(const id of ['sourceTools','cropControls','exportOptions','memoryPanel'])$(id).inert=v;$('stage').inert=v;$('a-options').inert=v;$('a-fitJpg').disabled=v;document.querySelectorAll('[data-aw]').forEach(b=>b.disabled=v);$('a-original').disabled=v;window.assembly?.stats();$('language').disabled=v;$('export').disabled=v||!cases.length;$('cancel').hidden=!v;$('progress').hidden=!v;}
+function check(){if(cancelled)throw Error(t('cancelled'));}
+const tick=()=>new Promise(r=>setTimeout(r,0));
+function load(url){return new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=()=>reject(Error(t('badImage')));im.src=url;});}
+function dims(canvas,w,h){if(w<1||h<1||w>32760||h>32760||w*h>80000000)throw Error(t('limit'));canvas.width=w;canvas.height=h;const ctx=canvas.getContext('2d');if(!ctx)throw Error(t('noCanvas'));ctx.fillStyle='#ff0000';ctx.fillRect(w-1,h-1,1,1);if(ctx.getImageData(w-1,h-1,1,1).data[0]!==255)throw Error(t('noCanvas'));ctx.clearRect(0,0,w,h);return ctx;}
+function encode(c,type='image/png',q=.92){return new Promise((resolve,reject)=>{try{c.toBlob(b=>b&&b.type===type?resolve(b):reject(Error(t('noCanvas'))),type,q);}catch(e){reject(e);}});}
+function fit(){if(!image)return;const available=Math.max(100,$('stage').clientWidth-34);const width=Math.min(image.naturalWidth,available)*Number($('zoom').value)/100;$('workspace').style.width=width+'px';$('workspace').style.height=(image.naturalHeight*width/image.naturalWidth)+'px';$('zoomValue').textContent=$('zoom').value+' %';}
+function updateSelection(){
+ window.projectStore?.schedule();
+ if(!image)return;rect=normalize(rect);const s=$('selection');s.style.left=rect.x/image.naturalWidth*100+'%';s.style.top=rect.y/image.naturalHeight*100+'%';s.style.width=rect.w/image.naturalWidth*100+'%';s.style.height=rect.h/image.naturalHeight*100+'%';
+ for(const k of ['w','h'])$(k).value=rect[k];
+ const c=$('preview');const scale=Math.min(1,270/rect.w,200/rect.h);c.width=Math.max(1,Math.round(rect.w*scale));c.height=Math.max(1,Math.round(rect.h*scale));c.getContext('2d').drawImage(image,rect.x,rect.y,rect.w,rect.h,0,0,c.width,c.height);
+ $('cropInfo').textContent=rect.w+' × '+rect.h+' px · '+(rect.w/300*25.4).toFixed(1)+' × '+(rect.h/300*25.4).toFixed(1)+' mm '+t('printSize');$('store').disabled=busy;
+}
+async function importImage(file){if(!file||busy||focusSession)return;if(!/\.(png|jpe?g|webp)$/i.test(file.name)){say(t('badImage'),true);return;}setBusy(true);cancelled=false;say(t('loading'));const url=URL.createObjectURL(file);try{const im=await load(url);check();if(sourceURL)URL.revokeObjectURL(sourceURL);image=im;sourceURL=url;sourceBlob=file;sourceName=file.name;$('source').src=url;$('source').alt=file.name;$('workspace').hidden=false;$('empty').hidden=true;rect=selectionLocked?fitLockedRect(rect,im.naturalWidth,im.naturalHeight):{x:0,y:0,w:im.naturalWidth,h:im.naturalHeight};drawMode=false;$('zoom').value=100;fit();updateSelection();$('sourceInfo').textContent=file.name+' · '+im.naturalWidth+' × '+im.naturalHeight+' px';say(t('loaded'));}catch(e){URL.revokeObjectURL(url);say(e.message,true);}finally{setBusy(false);$('store').disabled=!image;$('file').value='';}}
+function point(e){const b=$('workspace').getBoundingClientRect();return {x:clamp((e.clientX-b.left)/b.width*image.naturalWidth,0,image.naturalWidth),y:clamp((e.clientY-b.top)/b.height*image.naturalHeight,0,image.naturalHeight)};}
+$('workspace').onpointerdown=e=>{if(!image||busy||panning||e.button>0||drag)return;e.preventDefault();const p=point(e);const handle=e.target.dataset.h;const inside=p.x>=rect.x&&p.x<=rect.x+rect.w&&p.y>=rect.y&&p.y<=rect.y+rect.h;if(selectionLocked&&!inside)return;const mode=selectionLocked?'move':drawMode?'draw':handle||(inside?'move':'draw');drag={mode,p,start:{...rect},id:e.pointerId};$('workspace').setPointerCapture(e.pointerId);if(mode==='draw'){rect={x:Math.floor(Math.min(p.x,image.naturalWidth-1)),y:Math.floor(Math.min(p.y,image.naturalHeight-1)),w:1,h:1};updateSelection();}};
+$('workspace').onpointermove=e=>{if(!drag||e.pointerId!==drag.id||busy)return;e.preventDefault();const p=point(e),r=drag.start,m=drag.mode,dx=p.x-drag.p.x,dy=p.y-drag.p.y;
+ if(m==='draw'){rect={x:Math.min(drag.p.x,p.x),y:Math.min(drag.p.y,p.y),w:Math.max(1,Math.abs(p.x-drag.p.x)),h:Math.max(1,Math.abs(p.y-drag.p.y))};}
+ else if(m==='move'){rect={...r,x:clamp(r.x+dx,0,image.naturalWidth-r.w),y:clamp(r.y+dy,0,image.naturalHeight-r.h)};}
+ else{let left=r.x,right=r.x+r.w,top=r.y,bottom=r.y+r.h;if(m.includes('w'))left=clamp(r.x+dx,0,right-1);if(m.includes('e'))right=clamp(r.x+r.w+dx,left+1,image.naturalWidth);if(m.includes('n'))top=clamp(r.y+dy,0,bottom-1);if(m.includes('s'))bottom=clamp(r.y+r.h+dy,top+1,image.naturalHeight);rect={x:left,y:top,w:right-left,h:bottom-top};}updateSelection();};
+function endPointer(e){if(!drag||e.pointerId!==drag.id)return;if(e.type==='pointercancel')rect=drag.start;try{$('workspace').releasePointerCapture(e.pointerId);}catch{}drag=null;drawMode=false;updateSelection();}
+$('workspace').onpointerup=endPointer;$('workspace').onpointercancel=endPointer;
+$('selection').onkeydown=e=>{if(busy||!image||!['ArrowLeft','ArrowRight','ArrowUp','ArrowDown'].includes(e.key))return;e.preventDefault();const step=e.shiftKey?10:1;rect.x=clamp(rect.x+(e.key==='ArrowLeft'?-step:e.key==='ArrowRight'?step:0),0,image.naturalWidth-rect.w);rect.y=clamp(rect.y+(e.key==='ArrowUp'?-step:e.key==='ArrowDown'?step:0),0,image.naturalHeight-rect.h);updateSelection();};
+for(const k of ['w','h'])$(k).onchange=()=>{if(!image||busy||selectionLocked)return;rect[k]=Number($(k).value);updateSelection();};
+$('newRect').onclick=()=>{if(!image||busy||selectionLocked)return;if(panning)$('pan').click();drawMode=true;say(t('trace'));};$('all').onclick=()=>{if(!image||busy||selectionLocked)return;rect={x:0,y:0,w:image.naturalWidth,h:image.naturalHeight};drawMode=false;updateSelection();};$('pan').onclick=()=>{panning=!panning;$('pan').setAttribute('aria-pressed',String(panning));$('pan').classList.toggle('primary',panning);$('workspace').style.touchAction=panning?'pan-x pan-y':'none';$('workspace').style.cursor=panning?'grab':'crosshair';$('selection').style.touchAction=panning?'auto':'none';for(const h of document.querySelectorAll('.handle'))h.style.touchAction=panning?'auto':'none';say('');window.projectStore?.schedule();};$('zoom').oninput=fit;window.addEventListener('resize',fit);
+$('file').onchange=e=>importImage(e.target.files[0]);$('stage').ondragover=e=>{if([...e.dataTransfer.types].includes('Files')){e.preventDefault();$('stage').classList.add('over');}};$('stage').ondragleave=()=>$('stage').classList.remove('over');$('stage').ondrop=e=>{e.preventDefault();$('stage').classList.remove('over');importImage(e.dataTransfer.files[0]);};for(const name of ['dragover','drop'])window.addEventListener(name,e=>{if([...e.dataTransfer.types].includes('Files'))e.preventDefault();});
+$('store').onclick=async()=>{if(!image||busy||focusSession)return;setBusy(true);cancelled=false;say(t('processing'));const c=document.createElement('canvas');try{const ctx=dims(c,rect.w,rect.h);ctx.drawImage(image,rect.x,rect.y,rect.w,rect.h,0,0,rect.w,rect.h);const blob=await encode(c);check();const id=nextId++;cases.push({id,name:'case-'+String(id).padStart(3,'0'),width:rect.w,height:rect.h,blob,url:URL.createObjectURL(blob),source:sourceName});invalidate();renderMemory();say(t('stored'));}catch(e){say(e.message,true);}finally{c.width=c.height=1;setBusy(false);$('store').disabled=!image;}};
+function fitLockedRect(r,width,height){const w=Math.min(r.w,width),h=Math.min(r.h,height);return {x:clamp(r.x,0,width-w),y:clamp(r.y,0,height-h),w,h};}
+  const lockIcons = {
+    open: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 10h12a1.8 1.8 0 0 1 1.8 1.8v6.4A1.8 1.8 0 0 1 18 20H6a1.8 1.8 0 0 1-1.8-1.8v-6.4A1.8 1.8 0 0 1 6 10Zm2-1V7a4 4 0 0 1 7.3-2.3l-1.4 1A2.3 2.3 0 0 0 9.7 7v2H8Z"/></svg>',
+    closed: '<svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6 10h12a1.8 1.8 0 0 1 1.8 1.8v6.4A1.8 1.8 0 0 1 18 20H6a1.8 1.8 0 0 1-1.8-1.8v-6.4A1.8 1.8 0 0 1 6 10Zm2-1V7a4 4 0 0 1 8 0v2h-1.8V7a2.2 2.2 0 0 0-4.4 0v2H8Z"/></svg>'
+  };
+function updateLock(){
+ const b=$('lockSelection');b.innerHTML=selectionLocked?lockIcons.closed:lockIcons.open;b.setAttribute('aria-pressed',String(selectionLocked));b.title=t(selectionLocked?'unlock':'lock');b.setAttribute('aria-label',b.title);
+ $('workspace').classList.toggle('is-locked',selectionLocked);
+ for(const id of ['w','h','newRect','all','focusNew','focusAll'])$(id).disabled=selectionLocked;
+
+}
+$('lockSelection').onclick=()=>{if(busy||drag)return;selectionLocked=!selectionLocked;drawMode=false;updateLock();window.projectStore?.schedule();};
+function memorySummary(){const spaces=cases.filter(c=>c.isSpacer).length,n=cases.length-spaces;return (lang?n+' panel'+(n===1?'':'s'):n+' case'+(n===1?'':'s'))+(spaces?' · '+spaces+(lang?' space':' espace')+(spaces===1?'':'s'):'');}
+function releasePanel(item){URL.revokeObjectURL(item.url);if(item.cropSource&&item.cropSource.url!==item.url)URL.revokeObjectURL(item.cropSource.url);}
+async function addSpace(at=cases.length){
+ if(busy||focusSession)return;setBusy(true);cancelled=false;
+ const c=document.createElement('canvas');
+ try{const width=clamp(Math.round(Number($('a-width').value))||800,1,8192);dims(c,width,40);const blob=await encode(c);check();const id=nextId++;cases.splice(at,0,{id,name:(lang?'space-':'espace-')+String(id).padStart(3,'0'),width,height:40,blob,url:URL.createObjectURL(blob),isSpacer:true,source:lang?'Transparent spacer':'Bande transparente'});invalidate();renderMemory();say(t('spaceAdded'));}
+ catch(e){say(e.message,true);}finally{c.width=c.height=1;setBusy(false);}
+}
+$('addSpace').onclick=()=>addSpace();
+async function openFocus(item){
+ if(busy||focusSession||item.isSpacer||!cases.includes(item))return;
+ setBusy(true);cancelled=false;
+ try{
+  const base=item.cropSource||{url:item.url,blob:item.blob,width:item.width,height:item.height};
+  const im=await load(base.url);check();
+  focusSession={item,base,image,sourceName,rect:{...rect},selectionLocked,panning,drawMode,zoom:$('zoom').value,status:$('status').textContent,error:$('status').classList.contains('error'),scrollTop:$('stage').scrollTop,scrollLeft:$('stage').scrollLeft};
+  $('focusTitle').textContent=t('editCrop')+'  :  '+item.name;$('focusStatus').textContent='';$('focusStatus').classList.remove('error');
+  $('focusHost').append($('cropSurface'));
+  image=im;sourceName=item.name;rect=item.cropRect?{...item.cropRect}:{x:0,y:0,w:base.width,h:base.height};drawMode=false;selectionLocked=false;drag=null;
+  if(panning)$('pan').click();
+  $('source').src=base.url;$('source').alt=item.name;$('workspace').hidden=false;$('empty').hidden=true;$('zoom').value=100;
+  updateLock();$('focusEditor').showModal();fit();updateSelection();$('stage').scrollTop=0;$('stage').scrollLeft=0;
+  $('selection').focus({preventScroll:true});
+ }catch(e){if(focusSession)closeFocus();say(e.message,true);}finally{setBusy(false);}
+}
+function closeFocus(){
+ if(!focusSession)return;
+ const saved=focusSession;focusSession=null;drag=null;
+ if(panning!==saved.panning)$('pan').click();
+ image=saved.image;sourceName=saved.sourceName;rect=saved.rect;selectionLocked=saved.selectionLocked;drawMode=saved.drawMode;$('zoom').value=saved.zoom;
+ $('cropHome').append($('cropSurface'));$('workspace').hidden=!image;$('empty').hidden=!!image;
+ if(image){$('source').src=sourceURL;$('source').alt=sourceName;fit();updateSelection();}
+ else{$('source').removeAttribute('src');$('preview').width=$('preview').height=1;$('cropInfo').textContent='';$('store').disabled=true;}
+ for(const k of ['w','h'])$(k).value=rect[k];updateLock();say(saved.status,saved.error);$('stage').scrollTop=saved.scrollTop;$('stage').scrollLeft=saved.scrollLeft;
+ if($('focusEditor').open)$('focusEditor').close();window.projectStore?.schedule();
+}
+for(const id of ['focusClose','focusCancel'])$(id).onclick=()=>{if(!busy)closeFocus();};
+$('focusEditor').addEventListener('cancel',e=>{e.preventDefault();if(!busy)closeFocus();});
+$('focusEditor').addEventListener('close',()=>{if(focusSession&&!busy)closeFocus();});
+$('focusNew').onclick=()=>$('newRect').click();$('focusAll').onclick=()=>$('all').click();
+$('focusApply').onclick=async()=>{
+ if(busy||!focusSession||!image)return;
+ const session=focusSession,item=session.item,r=normalize(rect);const c=document.createElement('canvas');setBusy(true);cancelled=false;
+ for(const id of ['focusClose','focusCancel','focusApply','focusNew','focusAll'])$(id).disabled=true;
+ try{
+  const ctx=dims(c,r.w,r.h);ctx.drawImage(image,r.x,r.y,r.w,r.h,0,0,r.w,r.h);const blob=await encode(c);check();
+  const url=URL.createObjectURL(blob);if(item.url!==session.base.url)URL.revokeObjectURL(item.url);
+  item.cropSource=session.base;item.cropRect={...r};item.url=url;item.blob=blob;item.width=r.w;item.height=r.h;
+  invalidate();renderMemory();closeFocus();
+ }catch(e){$('focusStatus').textContent=e.message;$('focusStatus').classList.add('error');}
+ finally{c.width=c.height=1;setBusy(false);for(const id of ['focusClose','focusCancel','focusApply'])$(id).disabled=false;updateLock();$('store').disabled=!image;}
+};
+
+function button(text,fn,title){const b=document.createElement('button');b.type='button';b.className='small';b.textContent=text;b.title=title||text;b.onclick=fn;return b;}
+function move(from,to){if(busy||from<0||to<0||to>=cases.length)return;const [item]=cases.splice(from,1);cases.splice(to,0,item);invalidate();renderMemory();}
+function renderMemory(){
+ window.projectStore?.schedule();
+ $('memory').replaceChildren();cases.forEach((item,index)=>{const card=document.createElement('div');card.className='case'+(item.isSpacer?' is-spacer':'');card.draggable=true;card.ondragstart=e=>{if(busy){e.preventDefault();return;}dragCard=item.id;e.dataTransfer.setData('text/plain',String(item.id));card.classList.add('dragging');};card.ondragend=()=>{dragCard=null;card.classList.remove('dragging');};card.ondragover=e=>{if(dragCard!=null)e.preventDefault();};card.ondrop=e=>{e.preventDefault();if(dragCard!=null)move(cases.findIndex(c=>c.id===dragCard),index);dragCard=null;};const im=document.createElement('img');im.src=item.url;im.alt=item.name;im.loading='lazy';im.draggable=false;const name=document.createElement('input');name.value=item.name;name.setAttribute('aria-label',t('name'));name.oninput=()=>{item.name=name.value;invalidate();};const dim=document.createElement('div');dim.className='muted';dim.textContent=item.width+' × '+item.height+' px';dim.title=t('source')+' : '+item.source;const print=document.createElement('div');print.className='muted';print.textContent=(item.width/300*25.4).toFixed(1)+' × '+(item.height/300*25.4).toFixed(1)+' mm / 300 dpi';const bar=document.createElement('div');bar.className='bar';bar.style.marginTop='8px';const up=button('↑',()=>move(index,index-1),t('up'));up.disabled=index===0;const down=button('↓',()=>move(index,index+1),t('down'));down.disabled=index===cases.length-1;bar.append(up,down,button('↓ '+(lang?'File':'Fichier'),()=>runExport(item),t('one')),button('×',()=>{if(busy)return;releasePanel(item);cases.splice(index,1);invalidate();renderMemory();},t('remove')));let thumbnail=im;
+ if(!item.isSpacer){thumbnail=document.createElement('button');thumbnail.type='button';thumbnail.className='case-preview';thumbnail.title=t('editCrop');thumbnail.setAttribute('aria-label',t('editCrop')+' : '+item.name);thumbnail.append(im);thumbnail.onclick=()=>openFocus(item);}
+ else {thumbnail=document.createElement('div');const label=document.createElement('div');label.className='spacer-label';label.textContent=t('spaceLabel');thumbnail.append(label,im);}
+ bar.insertBefore(button(t('addSpace'),()=>addSpace(index+1)),bar.lastChild);
+ card.append(thumbnail,name,dim,print,bar);$('memory').append(card);});
+ $('storedCount').textContent=memorySummary();
+ $('memoryInfo').textContent=cases.length?memorySummary():t('none');updateOptions();window.assembly?.render();
+}
+function settings(){const print=$('profile').value==='print';const edge=Number($('edge').value),margin=Number($('marginSize').value);if((!print&&(!Number.isInteger(edge)||edge<64||edge>8192))||($('margin').checked&&(!Number.isFinite(margin)||margin<0||margin>(print?100:500))))throw Error(t('badSettings'));return {print,edge,dpi:print?300:96,margin:$('margin').checked?Math.round(print?margin*300/25.4:margin):0,type:$('format').value==='png'?'image/png':'image/jpeg',q:Number($('jpegQuality').value)/100,bg:$('background').value,alpha:$('format').value==='png'&&$('alpha').checked};}
+function outputSize(item,s){const scale=s.print?1:Math.min(1,s.edge/Math.max(item.width,item.height));const w=Math.max(1,Math.round(item.width*scale)),h=Math.max(1,Math.round(item.height*scale));return {w,h,width:w+2*s.margin,height:h+2*s.margin};}
+function updateOptions(){const print=$('profile').value==='print';$('edgeLabel').hidden=print;$('marginOptions').hidden=!$('margin').checked;$('marginUnit').textContent=print?'mm':'px';$('marginSize').max=print?100:500;$('marginSize').step=print?.1:1;$('jpegOption').hidden=$('format').value==='png';$('alphaOption').hidden=$('format').value!=='png';$('qValue').textContent=$('jpegQuality').value+' %';$('export').disabled=busy||!cases.length;try{const s=settings();$('exportInfo').textContent=(s.margin?t('withMargin')+' : '+s.margin+' px':t('saveHint'))+' · '+s.dpi+' dpi'+(cases.length?' · '+cases.length+' '+t('caseCount'):'');}catch(e){$('exportInfo').textContent=e.message;$('export').disabled=true;}window.assembly?.invalidate();window.assembly?.stats();}
+// Métadonnées de résolution : PNG pHYs ; JPEG JFIF. Aucune modification du nombre de pixels.
+const table=Uint32Array.from({length:256},(_,n)=>{for(let k=0;k<8;k++)n=n&1?0xedb88320^(n>>>1):n>>>1;return n>>>0;});
+function crc(a){let n=0xffffffff;for(const b of a)n=table[(n^b)&255]^(n>>>8);return (n^0xffffffff)>>>0;}
+function pngChunk(type,data){const out=new Uint8Array(data.length+12),v=new DataView(out.buffer);v.setUint32(0,data.length);for(let i=0;i<4;i++)out[4+i]=type.charCodeAt(i);out.set(data,8);v.setUint32(out.length-4,crc(out.subarray(4,out.length-4)));return out;}
+async function resolution(blob,dpi){const bytes=new Uint8Array(await blob.arrayBuffer());if(blob.type==='image/png'){const parts=[bytes.subarray(0,8)],d=new Uint8Array(9),v=new DataView(d.buffer);v.setUint32(0,Math.round(dpi/0.0254));v.setUint32(4,Math.round(dpi/0.0254));d[8]=1;let pos=8;while(pos<bytes.length){const len=new DataView(bytes.buffer,bytes.byteOffset+pos,4).getUint32(0),type=String.fromCharCode(...bytes.subarray(pos+4,pos+8));if(type!=='pHYs')parts.push(bytes.subarray(pos,pos+len+12));if(type==='IHDR')parts.push(pngChunk('pHYs',d));pos+=len+12;}return new Blob(parts,{type:blob.type});}
+ let p=2;while(p+4<bytes.length){const marker=bytes[p+1];if(marker===0xda||marker===0xd9)break;const len=(bytes[p+2]<<8)|bytes[p+3];if(len<2)break;if(marker===0xe0&&String.fromCharCode(...bytes.subarray(p+4,p+9))==='JFIF\0'){bytes[p+11]=1;bytes[p+12]=dpi>>8;bytes[p+13]=dpi&255;bytes[p+14]=dpi>>8;bytes[p+15]=dpi&255;return new Blob([bytes],{type:blob.type});}p+=len+2;}
+ const jfif=new Uint8Array([255,224,0,16,74,70,73,70,0,1,2,1,dpi>>8,dpi&255,dpi>>8,dpi&255,0,0]);return new Blob([bytes.subarray(0,2),jfif,bytes.subarray(2)],{type:blob.type});}
+async function renderExport(item,s){const o=outputSize(item,s),c=document.createElement('canvas');let im;try{const ctx=dims(c,o.width,o.height);if(!s.alpha){ctx.fillStyle=s.bg;ctx.fillRect(0,0,o.width,o.height);}im=await load(item.url);check();ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';ctx.drawImage(im,s.margin,s.margin,o.w,o.h);return await resolution(await encode(c,s.type,s.q),s.dpi);}finally{if(im)im.src='';c.width=c.height=1;}}
+function safeName(s){return (s||'').trim().replace(/[<>:"/\\|?*\x00-\x1f]/g,'-').replace(/[. ]+$/,'').slice(0,100)||'case';}
+async function zip(entries){let offset=0;const body=[],directory=[],enc=new TextEncoder();for(const [name,blob] of entries){check();const b=new Uint8Array(await blob.arrayBuffer()),n=enc.encode(name),sum=crc(b),h=new Uint8Array(30+n.length),v=new DataView(h.buffer);v.setUint32(0,0x04034b50,true);v.setUint16(4,20,true);v.setUint16(6,0x800,true);v.setUint16(12,33,true);v.setUint32(14,sum,true);v.setUint32(18,b.length,true);v.setUint32(22,b.length,true);v.setUint16(26,n.length,true);h.set(n,30);body.push(h,blob);const d=new Uint8Array(46+n.length),dv=new DataView(d.buffer);dv.setUint32(0,0x02014b50,true);dv.setUint16(4,20,true);dv.setUint16(6,20,true);dv.setUint16(8,0x800,true);dv.setUint16(14,33,true);dv.setUint32(16,sum,true);dv.setUint32(20,b.length,true);dv.setUint32(24,b.length,true);dv.setUint16(28,n.length,true);dv.setUint32(42,offset,true);d.set(n,46);directory.push(d);offset+=h.length+b.length;await tick();}const sz=directory.reduce((a,b)=>a+b.length,0);if(entries.length>65535||offset+sz>0xffffffff)throw Error(t('limit'));const end=new Uint8Array(22),ev=new DataView(end.buffer);ev.setUint32(0,0x06054b50,true);ev.setUint16(8,entries.length,true);ev.setUint16(10,entries.length,true);ev.setUint32(12,sz,true);ev.setUint32(16,offset,true);return new Blob([...body,...directory,end],{type:'application/zip'});}
+async function runExport(single=null){if(busy||!cases.length)return;let s;try{s=settings();}catch(e){say(e.message,true);return;}invalidate();setBusy(true);cancelled=false;$('progress').value=0;try{const list=single?[single]:cases,entries=[];for(let i=0;i<list.length;i++){check();say(t('processing')+' '+(i+1)+' / '+list.length);const blob=await renderExport(list[i],s);entries.push([(single?'':String(i+1).padStart(3,'0')+'-')+safeName(list[i].name)+(s.type==='image/png'?'.png':'.jpg'),blob]);$('progress').value=(i+1)/list.length;await tick();}check();const blob=single?entries[0][1]:await zip(entries);check();resultURL=URL.createObjectURL(blob);$('download').href=resultURL;$('download').download=single?entries[0][0]:safeName($('batchName').value)+'.zip';$('resultText').textContent=list.length+' '+t('caseCount')+' · '+(blob.size/1048576).toFixed(2)+(lang?' MB':' Mo');$('exportResult').hidden=false;say(t('done'));}catch(e){say(e.message,true);}finally{setBusy(false);updateOptions();$('store').disabled=!image;}}
+$('export').onclick=()=>runExport();$('cancel').onclick=()=>{cancelled=true;};$('clear').onclick=()=>{if(busy||!cases.length||!confirm(t('confirmClear')))return;for(const c of cases)releasePanel(c);cases=[];invalidate();renderMemory();say(t('none'));};
+$('profile').onchange=()=>{if(busy)return;$('marginSize').value=$('profile').value==='print'?'3':'20';invalidate();updateOptions();};
+for(const id of ['edge','format','jpegQuality','margin','marginSize','background','alpha','batchName'])$(id).addEventListener('input',()=>{if(busy)return;invalidate();updateOptions();});
+function translate(){document.documentElement.lang=lang?'en':'fr';for(const el of document.querySelectorAll('[data-t]'))el.textContent=t(el.dataset.t);$('language').textContent=lang?'FR':'EN';$('selection').setAttribute('aria-label',t('selected'));$('help').setAttribute('aria-label',t('manualTitle'));$('manualText').innerHTML=lang?'<p>Load an image, adjust the red rectangle and click <b>Store panel</b>. You can store several areas from the same image, then load another image.</p><p>Use the frame handles to resize, or move it from the inside. New selection lets you draw a fresh rectangle. Dimensions use original image pixels. Zoom changes only the display.</p><p>The memory contains lossless PNG crops at original resolution, without added margins. Name and reorder your panels, then export individually or as a ZIP.</p><p><b>Web:</b> limits the artwork’s longest side without upscaling or fixed aspect ratio. An optional margin is added afterwards.</p><p><b>Print:</b> preserves pixel dimensions and writes 300 dpi metadata. No detail is invented: a 1200 px wide crop prints at 101.6 mm at 300 dpi. Print margins are entered in millimetres.</p><p>Margins are disabled by default. Transparent PNGs can preserve transparency; JPG uses the selected background colour. Cropping does not remove white areas already inside the selection.</p><p>Everything runs locally. The project is saved automatically on this device. Download a .webtooner project file for an independent backup. Original files are never modified.</p>':'<p>Charge une image, ajuste le rectangle rouge et clique sur <b>Mémoriser la case</b>. Tu peux mémoriser plusieurs zones de la même image, puis charger une autre image.</p><p>Déplace le cadre par son intérieur, ajuste ses poignées, ou utilise « Nouvelle zone » pour tracer un autre rectangle. Les dimensions sont exprimées dans les pixels de l’image originale. Le zoom modifie seulement l’affichage.</p><p>La mémoire conserve des découpes PNG sans perte, aux dimensions d’origine, sans marge ajoutée. Nomme et ordonne les cases, puis exporte-les individuellement ou ensemble dans un ZIP.</p><p><b>Réseau :</b> limite le grand côté du dessin, sans agrandissement ni proportions imposées. La marge optionnelle s’ajoute ensuite.</p><p><b>Impression :</b> conserve les pixels et inscrit 300 dpi dans le fichier. Aucun détail n’est inventé : une case de 1200 px de large mesure 101,6 mm à 300 dpi. Les marges d’impression se règlent en millimètres.</p><p>Les marges sont désactivées par défaut. Le PNG peut conserver la transparence ; le JPG utilise la couleur de fond choisie. Le recadrage ne retire pas les blancs déjà présents à l’intérieur de la sélection.</p><p>Tout fonctionne localement. Le projet est enregistré automatiquement sur cet appareil. Télécharge un fichier projet .webtooner pour une copie indépendante. Les fichiers originaux ne sont jamais modifiés.</p>';renderMemory();updateLock();if(image)updateSelection();say(t('ready'));}
+$('language').onclick=()=>{if(busy)return;lang=1-lang;try{localStorage.setItem('cutter-language',lang?'en':'fr');}catch{}translate();};$('help').onclick=()=>$('manual').showModal();$('closeHelp').onclick=()=>$('manual').close();window.addEventListener('beforeunload',e=>{const dirty=window.projectStore?.isDirty()??true;window.projectStore?.flush();if(busy||((cases.length||sourceBlob)&&dirty)){e.preventDefault();e.returnValue='';}});
+
+Object.assign(words,{"assemblyJump": ["Assemblage", "Assembly"], "assemblyTitle": ["3. Assemblage Webtoon", "3. Webtoon assembly"], "assemblyHint": ["Les cases mémorisées sont assemblées dans leur ordre. Ajuste l’espace entre elles ; leurs proportions sont conservées.", "Stored panels are assembled in their current order. Adjust the spacing between them; their proportions are preserved."], "importPanels": ["Ajouter des images entières", "Add whole images"], "stripWidth": ["Largeur du bandeau (px)", "Strip width (px)"], "originalWidth": ["Largeur de la première case", "First panel width"], "filename": ["Nom du fichier", "File name"], "fitJpg": ["Réduire la largeur pour le JPG", "Reduce width for JPG"], "createStrip": ["Créer le bandeau", "Create strip"], "pngHint": ["Pour les très longs bandeaux, choisis PNG. Les exports des cases restent indépendants des réglages d’assemblage.", "Choose PNG for very long strips. Individual panel exports use their own settings."]});
+
+Object.assign(words,{
+ panelSpacing:['Espacement des cases (px)','Panel spacing (px)'],
+ spacingHint:['0 px : cases jointives. Espace ajouté entre les cases à la largeur d’export, sans marge en haut ni en bas.','0 px: adjoining panels. Spacing is added between panels at the export width, with no top or bottom margin.']
+});
+
+$('goAssembly').onclick=()=>$('assembly').scrollIntoView({behavior:'smooth'});
+$('panelFiles').onchange=async e=>{
+ if(busy)return;const files=[...e.target.files].sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true}));if(!files.length)return;
+ setBusy(true);cancelled=false;const errors=[];
+ try{for(const file of files){check();const url=URL.createObjectURL(file);let im;try{im=await load(url);check();cases.push({id:nextId++,name:file.name.replace(/\.[^.]+$/,''),width:im.naturalWidth,height:im.naturalHeight,blob:file,url,source:file.name});}catch(err){URL.revokeObjectURL(url);if(cancelled)throw err;errors.push(file.name);}finally{if(im)im.src='';}await tick();}say(errors.length?t('badImage')+' '+errors.join(', '):t('stored'),!!errors.length);}catch(err){say(err.message,true);}finally{invalidate();setBusy(false);renderMemory();e.target.value='';}
+};
+function assemblyMargin(){
+ if(!$('margin').checked)return 0;
+ const v=Number($('marginSize').value),print=$('profile').value==='print';
+ if(!Number.isFinite(v)||v<0||v>(print?100:500))throw Error(t('badSettings'));
+ return Math.round(print?v*300/25.4:v);
+}
+const letteringCanvas=document.createElement('canvas');
+function rightsLayout(width,margin){
+ const text=$('a-rights').value.trim();if(!text)return {height:0,lines:[]};
+ const size=Number($('a-rightsSize').value);if(!Number.isInteger(size)||size<8||size>96)throw Error(lang?'Choose a rights text size between 8 and 96 px.':'Choisis une taille de mentions entre 8 et 96 px.');
+ const pad=Math.min(Math.max(margin,Math.round(size*.9)),Math.max(0,Math.floor((width-1)/2))),available=Math.max(1,width-2*pad),lineHeight=Math.ceil(size*1.4);
+ const ctx=letteringCanvas.getContext('2d');ctx.font=size+'px Arial, sans-serif';const lines=[];
+ for(const para of text.replace(/\r/g,'').split('\n')){
+  let line='';for(const char of Array.from(para)){while(line&&ctx.measureText(line+char).width>available){const split=line.lastIndexOf(' ');if(split>0){lines.push(line.slice(0,split));line=line.slice(split+1);}else{lines.push(line);line='';}}line+=char;}
+  if(line||!para)lines.push(line);
+ }
+ return {height:lines.length*lineHeight+2*Math.round(size*.9),lines,size,lineHeight,pad:Math.round(size*.9),colour:$('a-rightsColour').value};
+}
+function watermarkLayout(p,row){
+ const text=$('a-watermark').value.trim();if(row.isSpacer||!$('a-watermarkOn').checked||!text)return null;
+ let size=Number($('a-watermarkSize').value);if(!Number.isFinite(size)||size<8||size>240)throw Error(lang?'Choose a watermark size between 8 and 240 px.':'Choisis une taille de filigrane entre 8 et 240 px.');
+ const opacity=Number($('a-watermarkOpacity').value)/100;if(!Number.isFinite(opacity)||opacity<.05||opacity>.8)throw Error(t('badSettings'));
+ size=Math.min(size,Math.max(1,row.scaledHeight/3));const ctx=letteringCanvas.getContext('2d');ctx.font=size+'px Arial, sans-serif';const measure=ctx.measureText(text).width;
+ if(measure>p.contentWidth*.88)size*=p.contentWidth*.88/measure;
+ return {text,size,opacity,colour:$('a-watermarkColour').value,x:p.width/2,y:row.top+row.scaledHeight/2};
+}
+function paintOverlays(ctx,p,offset,tileHeight){
+ ctx.save();ctx.textAlign='center';ctx.textBaseline='middle';
+ for(const row of p.rows){if(row.top>=offset+tileHeight||row.top+row.scaledHeight<=offset)continue;const w=watermarkLayout(p,row);if(!w)continue;
+  ctx.save();ctx.beginPath();ctx.rect(p.margin,row.top-offset,p.contentWidth,row.scaledHeight);ctx.clip();ctx.globalAlpha=w.opacity;ctx.fillStyle=w.colour;ctx.font=w.size+'px Arial, sans-serif';ctx.fillText(w.text,w.x,w.y-offset);ctx.restore();
+ }
+ if(p.rights.height&&p.contentHeight<offset+tileHeight){const f=p.rights;ctx.globalAlpha=1;ctx.fillStyle=f.colour;ctx.font=f.size+'px Arial, sans-serif';f.lines.forEach((line,i)=>ctx.fillText(line,p.width/2,p.contentHeight+f.pad+(i+.5)*f.lineHeight-offset));}
+ ctx.restore();
+}
+function svgText(svg,text,x,y,size,colour,opacity=1){const el=document.createElementNS('http://www.w3.org/2000/svg','text');for(const [key,value]of Object.entries({x,y,'font-size':size,'font-family':'Arial, sans-serif','text-anchor':'middle','dominant-baseline':'central',fill:colour,opacity}))el.setAttribute(key,String(value));el.textContent=text;svg.append(el);}
+function newSVG(width,height){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 '+width+' '+height);svg.setAttribute('aria-hidden','true');return svg;}
+function updateAssemblyPreview(p){
+ $('a-watermarkValue').textContent=$('a-watermarkOpacity').value+' %';const strip=$('a-strip');strip.replaceChildren();
+ for(const row of p.rows){const div=document.createElement('div');div.className='a-row';div.style.aspectRatio=p.width+' / '+row.scaledHeight;div.style.marginTop=(row.before/p.width*100)+'%';const im=document.createElement('img');im.src=row.url;im.alt=row.name;im.loading='lazy';im.style.left=(p.margin/p.width*100)+'%';im.style.width=(p.contentWidth/p.width*100)+'%';div.append(im);
+  const w=watermarkLayout(p,row);if(w){const svg=newSVG(p.width,row.scaledHeight);svgText(svg,w.text,w.x,row.scaledHeight/2,w.size,w.colour,w.opacity);div.append(svg);}strip.append(div);
+ }
+ if(p.rows.length&&p.rights.height){const f=p.rights,svg=newSVG(p.width,f.height);f.lines.forEach((line,i)=>svgText(svg,line,p.width/2,f.pad+(i+.5)*f.lineHeight,f.size,f.colour));strip.append(svg);}
+}
+function showRightsTemplates(){
+ const year=new Date().getFullYear(),author=lang?'[Author]':'[Auteur]',title=lang?'[Title]':'[Titre]';
+ const templates=[{label:lang?'Copyright':'Tous droits réservés',text:`© ${year} ${author}  :  ${title}. ${lang?'All rights reserved.':'Tous droits réservés.'}`},{label:lang?'Credits':'Crédits',text:lang?`Story: [Name] · Art: [Name] · Colours: [Name]\n© ${year} [Rights holder]  :  [Website / contact]`:`Scénario : [Nom] · Dessin : [Nom] · Couleurs : [Nom]\n© ${year} [Titulaire des droits]  :  [Site / contact]`},...['BY','BY-SA','BY-NC','BY-NC-SA','BY-ND','BY-NC-ND'].map(code=>({label:'CC '+code+' 4.0',text:`© ${year} ${author}  :  ${title}\n${lang?'Licensed under':'Sous licence'} CC ${code} 4.0\nhttps://creativecommons.org/licenses/${code.toLowerCase()}/4.0/`}))];
+ $('rightsTemplates').replaceChildren();for(const item of templates){const box=document.createElement('section');box.className='rights-template';const h=document.createElement('h3');h.textContent=item.label;const area=document.createElement('textarea');area.rows=3;area.value=item.text;area.setAttribute('aria-label',item.label);const bar=document.createElement('div');bar.className='bar';
+  const copy=button(t('copy'),async()=>{try{await navigator.clipboard.writeText(area.value);copy.textContent=lang?'Copied':'Copié';}catch{area.focus();area.select();copy.textContent=lang?'Select / copy':'Sélectionner / copier';}});
+  const use=button(t('useText'),()=>{$('a-rights').value=area.value;$('a-rights').dispatchEvent(new Event('input',{bubbles:true}));$('rightsDialog').close();});bar.append(copy,use);box.append(h,area,bar);$('rightsTemplates').append(box);
+ }$('rightsDialog').showModal();
+}
+$('rightsExamples').onclick=showRightsTemplates;$('closeRights').onclick=()=>$('rightsDialog').close();
+
+Object.assign(words,{exportMode:['Export du bandeau','Strip export'],wholeStrip:['Bandeau entier','Whole strip'],stripPieces:['En plusieurs morceaux (ZIP)','Multiple pieces (ZIP)'],exportTarget:['Préréglage','Preset'],customTarget:['Personnalisé','Custom'],pieceHeight:['Hauteur des morceaux (px)','Piece height (px)']});
+window.assembly=(()=>{
+ const $=id=>document.getElementById('a-'+id);
+ const JPG_HEIGHT=32760,MAX_PIXELS=180000000,MAX_HEIGHT=1000000;
+ let resultURL=null;
+ const loadImage=load,checkCancel=check,canvasBlob=encode;
+ const say=(text,error=false)=>{$('status').textContent=text;$('status').classList.toggle('error',error);};
+ function invalidate(){if(resultURL)URL.revokeObjectURL(resultURL);resultURL=null;$('result').hidden=true;$('save').removeAttribute('href');}
+ function plan(width=Number($('width').value)){
+ if(!Number.isInteger(width)||width<1||width>8192)throw Error(lang?'Choose a whole width between 1 and 8192 px.':'Choisis une largeur entière entre 1 et 8 192 px.');
+ const gap=Number($('gap').value);
+ if($('gap').value.trim()===''||!Number.isInteger(gap)||gap<0||gap>8192)throw Error(lang?'Choose a whole spacing between 0 and 8192 px.':'Choisis un espacement entier entre 0 et 8 192 px.');
+ const margin=assemblyMargin();const contentWidth=width-2*margin;if(contentWidth<1)throw Error(lang?'Reduce the side margins or increase the strip width.':'Réduis les marges latérales ou augmente la largeur du bandeau.');
+ let height=0,seenPanel=false,gapCount=0;const rows=cases.map((item,index)=>{const before=!item.isSpacer&&seenPanel?gap:0;height+=before;if(!item.isSpacer){if(seenPanel)gapCount++;seenPanel=true;}const h=Math.max(1,Math.round(item.height*contentWidth/item.width));const r={...item,top:height,scaledHeight:h,before};height+=h;return r;});const contentHeight=height;const rights=rightsLayout(width,margin);height+=rights.height;return {width,height,contentWidth,contentHeight,margin,rights,gap,gapCount,rows,pixels:width*height};
+ }
+ function pieceHeight(){const h=Number($('pieceHeight').value);if(!Number.isInteger(h)||h<1||h>8192)throw Error(lang?'Choose a whole piece height between 1 and 8192 px.':'Choisis une hauteur entière entre 1 et 8 192 px.');return h;}
+ function stats(){
+ const split=$('exportMode').value==='pieces';$('pieceOptions').hidden=!split;
+ const jpg=$('format').value==='jpeg';$('qualityGroup').hidden=!jpg;$('transparentGroup').hidden=jpg;$('background').disabled=!jpg&&$('transparent').checked;$('qualityValue').textContent=$('quality').value+' %';$('count').textContent=memorySummary();$('fitJpg').hidden=true;$('export').disabled=busy||!cases.length;const warnings=[];
+ try{const p=plan();if(split)pieceHeight();updateAssemblyPreview(p);$('stats').textContent=cases.length?p.width+' × '+p.height.toLocaleString(lang?'en':'fr')+' px · '+(p.pixels/1e6).toFixed(1)+' MP'+(p.margin?' · '+p.margin+' px '+(lang?'left / right':'gauche / droite'):''):t('none');
+ if(cases.some(c=>!c.isSpacer&&c.width<p.contentWidth))warnings.push(lang?'Some panels will be enlarged without adding detail.':'Certaines cases seront agrandies sans ajout de détails.');
+ if(!split&&jpg&&p.height>JPG_HEIGHT){warnings.push(lang?'Too tall for JPG: choose PNG or reduce the width or spacing.':'Trop haut pour le JPG : choisis PNG ou réduis la largeur ou l’espacement.');$('fitJpg').hidden=false;$('export').disabled=true;}
+ if(p.pixels>MAX_PIXELS||p.height>MAX_HEIGHT){warnings.push(lang?'Strip too large: reduce the width or spacing.':'Bandeau trop volumineux : réduis la largeur ou l’espacement.');$('export').disabled=true;}
+ if(!split&&!jpg&&!globalThis.CompressionStream&&p.height>JPG_HEIGHT){warnings.push(lang?'Long PNG export unavailable in this browser.':'Export PNG long indisponible dans ce navigateur.');$('export').disabled=true;}
+ }catch(e){$('stats').textContent=e.message;$('export').disabled=true;}
+ $('warning').textContent=warnings.join(' ');$('strip').style.background=!jpg&&$('transparent').checked?'transparent':$('background').value;
+ try{localStorage.setItem('cutter-assembly-v1',JSON.stringify(Object.fromEntries(['width','gap','format','quality','background','filename'].map(k=>[k,$(k).value]).concat([['transparent',$('transparent').checked]]))));}catch{}
+ }
+ function render(){ $('empty').hidden=!!cases.length;stats(); }
+const crcTable=Uint32Array.from({length:256},(_,n)=>{for(let k=0;k<8;k++)n=n&1?0xedb88320^(n>>>1):n>>>1;return n>>>0;});
+function crc(bytes,start=0,end=bytes.length){let n=0xffffffff;for(let i=start;i<end;i++)n=crcTable[(n^bytes[i])&255]^(n>>>8);return (n^0xffffffff)>>>0;}
+function chunk(type,data){const out=new Uint8Array(data.length+12);const view=new DataView(out.buffer);view.setUint32(0,data.length);for(let i=0;i<4;i++)out[4+i]=type.charCodeAt(i);out.set(data,8);view.setUint32(out.length-4,crc(out,4,out.length-4));return out;}
+async function exportPNG(p){
+ const header=new Uint8Array(13),hv=new DataView(header.buffer);hv.setUint32(0,p.width);hv.setUint32(4,p.height);header[8]=8;header[9]=6;
+ const parts=[new Uint8Array([137,80,78,71,13,10,26,10]),chunk('IHDR',header)];
+ const stream=new CompressionStream('deflate'),writer=stream.writable.getWriter(),reader=stream.readable.getReader();let streamFailure;
+ const drain=(async()=>{try{while(true){const {value,done}=await reader.read();if(done)break;parts.push(chunk('IDAT',value));}}catch(e){streamFailure=e;}})();
+ const c=document.createElement('canvas');c.width=p.width;const cache=new Map();let cursor=0;
+ try{for(let y=0;y<p.height;y+=512){checkCancel();const h=Math.min(512,p.height-y);c.height=h;const ctx=c.getContext('2d',{willReadFrequently:true});if(!ctx)throw Error((lang?"Insufficient graphics memory.":"Mémoire graphique insuffisante."));ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+ if(!$('transparent').checked){ctx.fillStyle=$('background').value;ctx.fillRect(0,0,p.width,h);}
+ while(cursor<p.rows.length&&p.rows[cursor].top+p.rows[cursor].scaledHeight<=y)cursor++;
+ for(let j=cursor;j<p.rows.length&&p.rows[j].top<y+h;j++){const r=p.rows[j];let im=cache.get(r.id);if(!im){im=await loadImage(r.url);cache.set(r.id,im);}ctx.drawImage(im,p.margin,r.top-y,p.contentWidth,r.scaledHeight);}
+ paintOverlays(ctx,p,y,h);
+ const pixels=ctx.getImageData(0,0,p.width,h).data;const stride=p.width*4;const raw=new Uint8Array((stride+1)*h);
+ for(let row=0;row<h;row++){const input=row*stride,output=row*(stride+1);raw[output]=1;for(let x=0;x<stride;x++)raw[output+1+x]=(pixels[input+x]-(x>=4?pixels[input+x-4]:0))&255;}
+ await writer.write(raw);if(streamFailure)throw streamFailure;
+ for(const r of p.rows){if(r.top+r.scaledHeight<=y+h&&cache.has(r.id)){cache.get(r.id).src='';cache.delete(r.id);}}
+ $('progress').value=(y+h)/p.height;say((lang?'Creating PNG: ':'Création PNG : ')+Math.round((y+h)/p.height*100)+' %');await tick();}
+ await writer.close();await drain;if(streamFailure)throw streamFailure;parts.push(chunk('IEND',new Uint8Array()));return new Blob(parts,{type:'image/png'});
+ }catch(e){try{await writer.abort(e);}catch{}await drain;throw e;}finally{c.width=c.height=1;for(const im of cache.values())im.src='';}
+}
+async function exportCanvas(p,type,offset=0,tileHeight=p.height){
+ if(tileHeight>JPG_HEIGHT)throw Error((lang?"Strip too tall for this mode. Choose PNG or reduce the width.":"Bandeau trop haut pour ce mode. Choisis PNG ou réduis la largeur."));
+ const c=document.createElement('canvas');c.width=p.width;c.height=tileHeight;
+ try{const ctx=c.getContext('2d',{willReadFrequently:true});if(!ctx)throw Error((lang?"Insufficient memory. Choose PNG or reduce the width.":"Mémoire insuffisante. Choisis PNG ou réduis la largeur."));
+ ctx.fillStyle='#ff0000';ctx.fillRect(p.width-1,tileHeight-1,1,1);if(ctx.getImageData(p.width-1,tileHeight-1,1,1).data[0]!==255)throw Error((lang?"The browser cannot handle these dimensions. Choose PNG or reduce the width.":"Dimensions refusées par le navigateur. Choisis PNG ou réduis la largeur."));ctx.clearRect(0,0,p.width,tileHeight);
+ if(type==='image/jpeg'||!$('transparent').checked){ctx.fillStyle=$('background').value;ctx.fillRect(0,0,p.width,tileHeight);}ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+ for(let i=0;i<p.rows.length;i++){checkCancel();const r=p.rows[i];if(r.top>=offset+tileHeight||r.top+r.scaledHeight<=offset)continue;const im=await loadImage(r.url);try{ctx.drawImage(im,p.margin,r.top-offset,p.contentWidth,r.scaledHeight);}finally{im.src='';}$('progress').value=(i+1)/p.rows.length;say((lang?'Assembly ':'Assemblage ')+(i+1)+' / '+p.rows.length);await tick();}
+ paintOverlays(ctx,p,offset,tileHeight);
+ checkCancel();say((lang?"Compressing image\u2026":"Compression de l’image…"));const blob=await canvasBlob(c,type,Number($('quality').value)/100);if(blob.type!==type)throw Error((lang?"This export format is not available in this browser.":"Ce format d’export n’est pas disponible dans ce navigateur."));return blob;
+ }finally{c.width=c.height=1;}
+}
+
+ $('export').onclick=async()=>{
+ if(busy||!cases.length)return;let p;try{p=plan();if(p.pixels>MAX_PIXELS||p.height>MAX_HEIGHT)throw Error(t('limit'));}catch(e){say(e.message,true);return;}
+ invalidate();cancelled=false;setBusy(true);$('cancel').hidden=false;$('progress').hidden=false;$('progress').value=0;
+ try{const png=$('format').value==='png',type=png?'image/png':'image/jpeg',split=$('exportMode').value==='pieces',base=safeName($('filename').value.replace(/\.(png|jpe?g|zip)$/i,''));let blob,info='',warnings=[];
+ if(split){const height=pieceHeight(),entries=[],count=Math.ceil(p.height/height),target=$('target').value;let total=0,large=0;
+ for(let i=0;i<count;i++){check();const part=await exportCanvas(p,type,i*height,Math.min(height,p.height-i*height));check();entries.push([base+'-'+String(i+1).padStart(3,'0')+(png?'.png':'.jpg'),part]);total+=part.size;if((target==='webtoon'&&part.size>2000000)||(target==='tapas'&&part.size>=10000000))large++;$('progress').value=(i+1)/count;say((lang?'Piece ':'Morceau ')+(i+1)+' / '+count);await tick();}
+ if(target==='webtoon'&&(p.width>800||height>1280||total>20000000||count>100||large))warnings.push(lang?'WEBTOON limits exceeded (800 × 1280 px, 2 MB/image, 20 MB and 100 images/episode). Reduce dimensions or JPG quality.':'Limites WEBTOON dépassées (800 × 1280 px, 2 Mo/image, 20 Mo et 100 images/épisode). Réduis les dimensions ou la qualité JPG.');
+ if(target==='tapas'&&(p.width>940||large))warnings.push(lang?'Tapas limits exceeded (940 px wide, under 10 MB/image). Reduce dimensions or JPG quality.':'Limites Tapas dépassées (940 px de large, moins de 10 Mo/image). Réduis les dimensions ou la qualité JPG.');
+ blob=await zip(entries);info=count+(lang?' pieces · ':' morceaux · ');if(!warnings.length&&target!=='custom')info+=(lang?'Size limits checked · ':'Dimensions et poids vérifiés · ');
+ }else blob=png&&globalThis.CompressionStream?await exportPNG(p):await exportCanvas(p,type);
+ check();resultURL=URL.createObjectURL(blob);$('save').href=resultURL;$('save').download=base+(split?'.zip':png?'.png':'.jpg');$('resultInfo').textContent=info+p.width+' × '+p.height+' px · '+(blob.size/1048576).toFixed(2)+(lang?' MB':' Mo');$('result').hidden=false;say(warnings.length?warnings.join(' '):t('done'),!!warnings.length);
+ }catch(e){say(e.message,true);}finally{setBusy(false);$('cancel').hidden=true;$('progress').hidden=true;stats();}
+ };
+ $('cancel').onclick=()=>{cancelled=true;};
+ for(const id of ['exportMode','target','pieceHeight','width','gap','format','quality','background','transparent','filename','rights','rightsSize','rightsColour','watermarkOn','watermark','watermarkOpacity','watermarkSize','watermarkColour'])$(id).oninput=()=>{if(busy)return;if(id==='gap')syncGapRange();if(id==='target'){if($('target').value==='webtoon'){$('width').value=800;$('pieceHeight').value=1280;}if($('target').value==='tapas')$('width').value=940;}invalidate();stats();window.projectStore?.schedule();};
+ function syncGapRange(){const gap=Number($('gap').value);$('gapRange').max=Math.max(1000,Math.min(8192,Number.isFinite(gap)?gap:0));$('gapRange').value=Number.isFinite(gap)?gap:0;}
+ $('gapRange').oninput=()=>{if(busy)return;$('gap').value=$('gapRange').value;invalidate();stats();};
+ document.querySelectorAll('[data-aw]').forEach(b=>b.onclick=()=>{if(busy)return;$('width').value=b.dataset.aw;invalidate();stats();});
+ $('original').onclick=()=>{if(busy||!cases.length)return;$('width').value=Math.min(8192,cases[0].width);invalidate();stats();};
+ $('fitJpg').onclick=()=>{if(busy)return;try{const current=plan();let best=0;const min=2*assemblyMargin()+1;for(let w=Math.min(current.width-1,8192);w>=min;w--){const p=plan(w);if(p.height<=JPG_HEIGHT&&p.pixels<=MAX_PIXELS){best=w;break;}}if(!best)throw Error(lang?'Reduce spacing or margins, or choose PNG.':'Réduis les espaces ou les marges, ou choisis PNG.');$('width').value=best;invalidate();stats();window.projectStore?.schedule();}catch(e){say(e.message,true);}};
+ try{const saved=JSON.parse(localStorage.getItem('cutter-assembly-v1'));if(saved){for(const k of ['width','gap','format','quality','background','filename'])if(saved[k]!=null)$(k).value=saved[k];$('transparent').checked=!!saved.transparent;}}catch{}
+ syncGapRange();
+ return {render,stats,invalidate,plan};
+})();
+Object.assign(words,{
+ lock:['Verrouiller les dimensions','Lock dimensions'],unlock:['Déverrouiller les dimensions','Unlock dimensions'],
+ lockedHint:['Dimensions verrouillées : déplace le cadre par son intérieur. Un clic à côté ne change pas la sélection.','Dimensions locked: move the frame from inside. Clicking outside leaves the selection unchanged.'],
+ addSpace:['+ espace','+ space'],spaceLabel:['Bande transparente · espace','Transparent strip · spacer'],
+ editCrop:['Recadrer cette case','Crop this panel'],closeEditor:['Fermer','Close'],applyCrop:['Appliquer le recadrage','Apply crop'],
+ focusHint:['Ajuste le cadre, puis applique le recadrage. L’image d’origine reste disponible pour reprendre le cadrage.','Adjust the frame, then apply the crop. The original image remains available for later adjustments.'],
+ spaceAdded:['Espace ajouté : déplace sa carte pour le placer entre deux cases. Tu peux en ajouter plusieurs à la suite.','Spacer added: move its card between panels. Add several in a row for more space.']
+});
+words.gesture=['Déplace le cadre rouge ou ses poignées. Ferme le cadenas pour déplacer le cadre sans modifier ses dimensions. Flèches : 1 px, Maj : 10 px.','Move the red frame or its handles. Close the lock to move the frame without changing its dimensions. Arrow keys: 1 px; Shift: 10 px.'];
+words.session=['Mémoire de session : exporte avant de fermer. Glisse les cartes ou utilise les flèches pour les ordonner. Clique sur une miniature pour la recadrer. « + espace » insère une bande transparente de 40 px à la largeur d’assemblage actuelle, cumulable avec les autres.','Session memory: export before closing. Drag cards or use arrows to reorder. Click a thumbnail to crop it. “+ space” inserts a transparent 40 px strip at the current assembly width; add more for extra space.'];
+
+const originalTranslate=translate;
+translate=()=>{originalTranslate();$('manualText').insertAdjacentHTML('beforeend',lang?'<p><b>Webtoon assembly:</b> stored panels automatically form a vertical strip in the same order. Choose its width, the spacing between panels and JPG or PNG, then create and download the strip. Spacing uses the background colour, or transparency for a transparent PNG; it adds no margin at the top or bottom. At 0 px, panels adjoin as before. PNG supports very long strips. You can also add whole images to the shared panel list. Individual exports and ZIP remain available with independent settings.</p>':'<p><b>Assemblage Webtoon :</b> les cases mémorisées forment automatiquement un bandeau vertical dans le même ordre. Choisis sa largeur, l’espacement entre les cases et le format JPG ou PNG, puis crée et télécharge le bandeau. L’espacement utilise la couleur de fond, ou la transparence pour un PNG transparent ; il n’ajoute aucune marge en haut ni en bas. À 0 px, les cases sont jointives comme auparavant. Le PNG permet les très longs bandeaux. Tu peux aussi ajouter des images entières à la liste commune. Les exports individuels et ZIP restent disponibles avec leurs propres réglages.</p>');};
+const translateWithEditor=translate;
+translate=()=>{translateWithEditor();$('manualText').insertAdjacentHTML('beforeend',lang?'<p><b>Lock:</b> close the lock beside width and height to move the selection without resizing or redrawing it. Unlock it to change the crop.</p><p><b>Stored panels:</b> click a thumbnail to crop it in the focus window. Apply replaces that panel; Cancel leaves it unchanged. The original panel stays available for further adjustments. <b>+ space</b> adds a transparent 40 px strip at the current assembly width. Move it between panels; several spaces add together and use the assembly background colour. They do not duplicate the automatic gap.</p>':'<p><b>Cadenas :</b> ferme-le à côté de la largeur et de la hauteur pour déplacer la sélection sans la redimensionner ni la recréer. Ouvre-le pour modifier le cadrage.</p><p><b>Cases mémorisées :</b> clique sur une miniature pour la recadrer dans la fenêtre focus. Appliquer remplace cette case ; Annuler la laisse intacte. La case d’origine reste disponible pour reprendre le cadrage. <b>+ espace</b> ajoute une bande transparente de 40 px à la largeur d’assemblage actuelle. Déplace-la entre les cases ; plusieurs espaces se cumulent et prennent la couleur de fond du bandeau, sans multiplier l’espacement automatique.</p>');};
+Object.assign(words,{
+ ready:['',''],loaded:['Image chargée.','Image loaded.'],stored:['Case mémorisée.','Panel stored.'],done:['Export prêt.','Export ready.'],trace:['Nouvelle sélection.','New selection.'],spaceAdded:['Espace ajouté.','Spacer added.'],
+ rightsLabel:['Droits / copyright / CC','Rights / copyright / CC'],examples:['Formulations','Templates'],textSize:['Taille du texte (px)','Text size (px)'],textColour:['Couleur du texte','Text colour'],watermark:['Filigrane sur les cases','Watermark on panels'],watermarkText:['Texte du filigrane','Watermark text'],opacity:['Opacité','Opacity'],ccChooser:['Choisir une licence Creative Commons','Choose a Creative Commons licence'],copy:['Copier','Copy'],useText:['Utiliser ce texte','Use this text'],saveProject:['Télécharger le projet','Download project'],openProject:['Ouvrir un projet','Open project'],previousProject:['Version précédente','Previous version']
+});
+translate();
+// Local project journal: the previous committed snapshot survives failed writes.
+window.projectStore=(()=>{
+ const controlIds=['profile','edge','format','jpegQuality','margin','marginSize','background','alpha','batchName','a-exportMode','a-target','a-pieceHeight','a-width','a-gap','a-format','a-quality','a-background','a-transparent','a-filename','a-rights','a-rightsSize','a-rightsColour','a-watermarkOn','a-watermark','a-watermarkOpacity','a-watermarkSize','a-watermarkColour'];
+ let db=null,ready=false,restoring=true,blocked=false,timer=null,running=null,revision=0,lastValid=null,headToken=null,lastSignature='',hasPrevious=false,persistenceAsked=false,recoveredFallback=false;
+ const blobIds=new WeakMap(),normalizedBlobs=new WeakMap();let blobSerial=0;
+ function mediaBlob(b,name=''){if(!b||/^image\/(png|jpeg|webp)$/.test(b.type))return b;if(!normalizedBlobs.has(b)){const ext=String(name).split('.').pop().toLowerCase(),type=ext==='png'?'image/png':ext==='webp'?'image/webp':'image/jpeg';normalizedBlobs.set(b,new Blob([b],{type}));}return normalizedBlobs.get(b);}
+ function status(kind,text){$('saveStatus').dataset.state=kind;$('saveStatus').textContent=text;}
+ const savedText=()=>recoveredFallback?(lang?'Previous version restored':'Version précédente restaurée'):(lang?'Saved on this device':'Enregistré sur cet appareil');
+ function signature(value){return JSON.stringify(value,(key,v)=>{if(key==='savedAt'||key==='token')return undefined;if(v instanceof Blob){if(!blobIds.has(v))blobIds.set(v,++blobSerial);return {blob:blobIds.get(v)};}return v;});}
+ function view(){return {rect:{...rect},selectionLocked,panning,zoom:$('zoom').value,scrollTop:$('stage').scrollTop,scrollLeft:$('stage').scrollLeft};}
+ function snapshot(){
+  const main=focusSession?{rect:{...focusSession.rect},selectionLocked:focusSession.selectionLocked,panning:focusSession.panning,zoom:focusSession.zoom,scrollTop:focusSession.scrollTop,scrollLeft:focusSession.scrollLeft}:view();
+  return {format:'eigrutel-webtooner',version:1,appVersion:'1.0.0',lang,controls:Object.fromEntries(controlIds.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value])),source:sourceBlob?{blob:mediaBlob(sourceBlob,sourceName),name:focusSession?focusSession.sourceName:sourceName}:null,view:main,focus:focusSession?{panelId:focusSession.item.id,...view()}:null,panels:cases.map(c=>({id:c.id,name:c.name,width:c.width,height:c.height,blob:mediaBlob(c.blob,c.source),source:c.source,isSpacer:!!c.isSpacer,cropRect:c.cropRect?{...c.cropRect}:null,cropSource:c.cropSource?{blob:mediaBlob(c.cropSource.blob,c.source),width:c.cropSource.width,height:c.cropSource.height}:null}))};
+ }
+ function validate(p){
+  const fail=()=>{throw Error(lang?'Invalid or incomplete project.':'Projet invalide ou incomplet.');};
+  const object=v=>v&&typeof v==='object'&&!Array.isArray(v),dim=n=>Number.isInteger(n)&&n>0&&n<=1000000,blob=b=>b instanceof Blob&&b.size>0&&/^image\/(png|jpeg|webp)$/.test(b.type);
+  if(!object(p)||p.format!=='eigrutel-webtooner'||p.version!==1||!Array.isArray(p.panels)||p.panels.length>10000||!object(p.controls)||!object(p.view))fail();
+  const ids=new Set();for(const c of p.panels){if(!object(c)||!Number.isSafeInteger(c.id)||c.id<1||ids.has(c.id)||typeof c.name!=='string'||!dim(c.width)||!dim(c.height)||!blob(c.blob))fail();ids.add(c.id);if(c.cropSource&&(!blob(c.cropSource.blob)||!dim(c.cropSource.width)||!dim(c.cropSource.height)))fail();if(c.cropRect&&(!object(c.cropRect)||!dim(c.cropRect.w)||!dim(c.cropRect.h)||!Number.isInteger(c.cropRect.x)||!Number.isInteger(c.cropRect.y)||c.cropRect.x<0||c.cropRect.y<0))fail();}
+  if(p.source&&(!object(p.source)||!blob(p.source.blob)||typeof p.source.name!=='string'))fail();
+  if(!object(p.view.rect)||!dim(p.view.rect.w)||!dim(p.view.rect.h)||!Number.isFinite(p.view.rect.x)||!Number.isFinite(p.view.rect.y))fail();
+  for(const id of controlIds){const v=p.controls[id];if(v!==undefined&&typeof v!=='boolean'&&typeof v!=='string'&&typeof v!=='number')fail();}
+  return p;
+ }
+ function openDB(){return new Promise((resolve,reject)=>{
+  if(!globalThis.indexedDB){reject(Error('IndexedDB unavailable'));return;}
+  const request=indexedDB.open('eigrutel-webtooner-project',1);let expired=false;
+  const timeout=setTimeout(()=>{expired=true;reject(Error('Storage unavailable'));},6000);
+  request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains('projects'))request.result.createObjectStore('projects');};
+  request.onsuccess=()=>{clearTimeout(timeout);if(expired){request.result.close();return;}resolve(request.result);};request.onerror=()=>{clearTimeout(timeout);reject(request.error);};request.onblocked=()=>status('error',lang?'Close the other webtooner windows.':'Ferme les autres fenêtres webtooner.');
+ });}
+ function read(key){return new Promise((resolve,reject)=>{const tx=db.transaction('projects','readonly'),req=tx.objectStore('projects').get(key);req.onsuccess=()=>resolve(req.result||null);req.onerror=()=>reject(req.error);});}
+ function commit(p){return new Promise((resolve,reject)=>{
+  let conflict=false;let tx;try{tx=db.transaction('projects','readwrite',{durability:'strict'});}catch{tx=db.transaction('projects','readwrite');}
+  const store=tx.objectStore('projects'),req=store.get('latest');
+  req.onsuccess=()=>{if((req.result?.token||null)!==headToken){conflict=true;tx.abort();return;}if(lastValid)store.put(lastValid,'previous');store.put(p,'latest');};
+  tx.oncomplete=()=>resolve();tx.onerror=()=>{};tx.onabort=()=>{if(conflict){blocked=true;reject(Error('OTHER_WINDOW'));}else reject(tx.error||Error('Write failed'));};
+ });}
+ function schedule(){
+  if(!ready||restoring||blocked)return;revision++;clearTimeout(timer);status('saving',lang?'Saving…':'Enregistrement…');timer=setTimeout(()=>flush(),300);
+ }
+ function flush(){
+  clearTimeout(timer);if(!ready||restoring||blocked||!db)return Promise.resolve(false);if(busy){timer=setTimeout(()=>flush(),400);return Promise.resolve(false);}if(running)return running;
+  running=(async()=>{await Promise.resolve();try{
+   do{const currentRevision=revision,p=snapshot(),sig=signature(p);validate(p);if(sig===lastSignature){status('saved',savedText());return true;}
+    status('saving',lang?'Saving…':'Enregistrement…');p.savedAt=Date.now();p.token=globalThis.crypto?.randomUUID?.()||Date.now()+'-'+Math.random();await commit(p);
+    recoveredFallback=false;hasPrevious=!!lastValid;lastValid=p;headToken=p.token;lastSignature=sig;$('previousProject').disabled=!hasPrevious;status('saved',savedText());
+    if(currentRevision===revision||busy)break;
+   }while(true);return true;
+  }catch(e){status('error',e.message==='OTHER_WINDOW'?(lang?'Another window changed this project  :  download your copy.':'Une autre fenêtre a modifié le projet  :  télécharge ta copie.'):(lang?'Automatic save failed  :  download the project.':'Sauvegarde automatique impossible  :  télécharge le projet.'));return false;}finally{running=null;}})();return running;
+ }
+ async function apply(p){
+  validate(p);const urls=[],newPanels=[];let newSource=null;
+  async function prepare(blob,width,height){const url=URL.createObjectURL(blob);urls.push(url);const im=await load(url);if((width&&im.naturalWidth!==width)||(height&&im.naturalHeight!==height))throw Error(lang?'An image is incomplete.':'Une image est incomplète.');return {url,im};}
+  try{
+   for(const c of p.panels){const loaded=await prepare(c.blob,c.width,c.height),item={...c,url:loaded.url,name:c.name.slice(0,500),source:typeof c.source==='string'?c.source:''};loaded.im.src='';if(c.cropSource){const base=await prepare(c.cropSource.blob,c.cropSource.width,c.cropSource.height);base.im.src='';item.cropSource={...c.cropSource,url:base.url};if(c.cropRect&&(c.cropRect.x+c.cropRect.w>c.cropSource.width||c.cropRect.y+c.cropRect.h>c.cropSource.height))throw Error('Invalid crop');}newPanels.push(item);}
+   if(p.source){const loaded=await prepare(p.source.blob);newSource={...p.source,...loaded};}
+  }catch(e){urls.forEach(url=>URL.revokeObjectURL(url));throw e;}
+  if(focusSession)closeFocus();for(const c of cases)releasePanel(c);if(sourceURL)URL.revokeObjectURL(sourceURL);
+  cases=newPanels;nextId=Math.max(0,...cases.map(c=>c.id))+1;sourceURL=newSource?.url||null;sourceBlob=newSource?.blob||null;sourceName=newSource?.name||'';image=newSource?.im||null;drag=null;drawMode=false;
+  for(const id of controlIds)if(p.controls[id]!==undefined){if($(id).type==='checkbox')$(id).checked=!!p.controls[id];else $(id).value=$(id).maxLength>0?String(p.controls[id]).slice(0,$(id).maxLength):String(p.controls[id]);}
+  lang=p.lang===1?1:0;rect=image?normalize(p.view.rect):{x:0,y:0,w:1,h:1};selectionLocked=!!p.view.selectionLocked;$('zoom').value=p.view.zoom||100;
+  if(panning!==!!p.view.panning)$('pan').click();
+  $('workspace').hidden=!image;$('empty').hidden=!!image;
+  if(image){$('source').src=sourceURL;$('source').alt=sourceName;$('sourceInfo').textContent=sourceName+' · '+image.naturalWidth+' × '+image.naturalHeight+' px';fit();updateSelection();}
+  else{$('source').removeAttribute('src');$('sourceInfo').textContent='';$('preview').width=$('preview').height=1;$('cropInfo').textContent='';}
+  $('w').value=rect.w;$('h').value=rect.h;invalidate();translate();$('a-gapRange').max=Math.max(1000,Number($('a-gap').value)||0);$('a-gapRange').value=$('a-gap').value;$('stage').scrollTop=p.view.scrollTop||0;$('stage').scrollLeft=p.view.scrollLeft||0;$('store').disabled=!image;
+  if(p.focus){const item=cases.find(c=>c.id===p.focus.panelId&&!c.isSpacer);if(item){setBusy(false);await openFocus(item);if(focusSession){rect=normalize(p.focus.rect||rect);selectionLocked=!!p.focus.selectionLocked;$('zoom').value=p.focus.zoom||100;if(panning!==!!p.focus.panning)$('pan').click();updateLock();fit();updateSelection();$('stage').scrollTop=p.focus.scrollTop||0;$('stage').scrollLeft=p.focus.scrollLeft||0;}}}
+ }
+ async function initialize(){
+  $('saveStatus').textContent=lang?'Restoring…':'Restauration…';document.querySelector('main').inert=true;setBusy(true);
+  try{db=await openDB();db.onversionchange=()=>{db.close();db=null;blocked=true;status('error',lang?'Reload to resume automatic saving.':'Recharge pour réactiver la sauvegarde.');};
+   const latest=await read('latest'),previous=await read('previous');headToken=latest?.token||null;hasPrevious=!!previous;
+   if(latest){try{await apply(latest);lastValid=latest;}catch(e){if(!previous)throw e;await apply(previous);lastValid=previous;recoveredFallback=true;}}
+   lastSignature=signature(snapshot());status('saved',lastValid?savedText():(lang?'Automatic saving enabled':'Sauvegarde automatique active'));$('previousProject').disabled=!hasPrevious;
+  }catch(e){blocked=true;status('error',lang?'Recovery / automatic saving unavailable  :  open or download a project.':'Restauration / sauvegarde automatique indisponible  :  ouvre ou télécharge un projet.');}
+  finally{restoring=false;ready=true;setBusy(false);document.querySelector('main').inert=false;$('store').disabled=!image;}
+ }
+ async function pack(p){
+  const seen=new Map(),assets={};
+  async function walk(v){if(v instanceof Blob){if(!seen.has(v)){const id='asset-'+(seen.size+1);seen.set(v,id);const bytes=new Uint8Array(await v.arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=32768)binary+=String.fromCharCode(...bytes.subarray(i,i+32768));assets[id]={type:v.type,data:btoa(binary)};}return {$asset:seen.get(v)};}
+   if(Array.isArray(v)){const a=[];for(const x of v)a.push(await walk(x));return a;}if(v&&typeof v==='object'){const out={};for(const [k,x]of Object.entries(v))out[k]=await walk(x);return out;}return v;
+  }return {format:'webtooner-backup',version:1,project:await walk(p),assets};
+ }
+ function unpack(data){
+  if(data?.format!=='webtooner-backup'||data.version!==1||!data.assets||typeof data.assets!=='object')throw Error('Invalid project');const assets=new Map();
+  for(const [key,asset]of Object.entries(data.assets)){if(!asset||typeof asset.data!=='string'||!/^image\/(png|jpeg|webp)$/.test(asset.type))throw Error('Invalid image');const binary=atob(asset.data),bytes=new Uint8Array(binary.length);for(let i=0;i<bytes.length;i++)bytes[i]=binary.charCodeAt(i);assets.set(key,new Blob([bytes],{type:asset.type}));}
+  function walk(v){if(v&&typeof v==='object'&&Object.hasOwn(v,'$asset')){if(!assets.has(v.$asset))throw Error('Missing image');return assets.get(v.$asset);}if(Array.isArray(v))return v.map(walk);if(v&&typeof v==='object'){const out=Object.create(null);for(const [k,x]of Object.entries(v))out[k]=walk(x);return out;}return v;}
+  return validate(walk(data.project));
+ }
+ async function download(){if(busy)return;setBusy(true);$('saveProject').disabled=true;try{const p=snapshot();validate(p);const data=await pack(p),blob=new Blob([JSON.stringify(data)],{type:'application/json'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=safeName($('a-filename').value||'webtooner')+'.webtooner';a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);}catch(e){status('error',lang?'Project download failed.':'Téléchargement du projet impossible.');}finally{setBusy(false);$('saveProject').disabled=false;}}
+ async function importFile(file){if(!file||busy)return;if((cases.length||sourceBlob)&&!confirm(lang?'Replace the current work with this project?':'Remplacer le travail en cours par ce projet ?'))return;await flush();setBusy(true);restoring=true;
+  let imported=false;try{if(file.size>512*1024*1024)throw Error('Too large');const p=unpack(JSON.parse(await file.text()));await apply(p);if(db){headToken=(await read('latest'))?.token||null;blocked=false;}lastSignature='';imported=true;status('saving',lang?'Project opened':'Projet ouvert');}
+  catch(e){status('error',lang?'Cannot open this project. Current work is preserved.':'Projet illisible. Le travail en cours est conservé.');}
+  finally{setBusy(false);restoring=false;$('projectFile').value='';if(imported)schedule();}
+ }
+ async function restorePrevious(){if(!db||busy||!hasPrevious)return;if(!confirm(lang?'Restore the previous saved version?':'Restaurer la version enregistrée précédente ?'))return;clearTimeout(timer);if(running)await running;setBusy(true);restoring=true;let restored=false;try{const p=await read('previous');await apply(p);lastSignature='';restored=true;}catch(e){status('error',lang?'Previous version unavailable.':'Version précédente indisponible.');}finally{setBusy(false);restoring=false;if(restored)schedule();}}
+ $('saveProject').onclick=download;$('projectFile').onchange=e=>importFile(e.target.files[0]);$('previousProject').onclick=restorePrevious;
+ document.addEventListener('input',e=>{if(e.target.closest('#rightsDialog'))return;schedule();});document.addEventListener('change',()=>schedule());$('stage').addEventListener('scroll',()=>schedule(),{passive:true});
+ document.addEventListener('pointerup',()=>{schedule();flush();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flush();});window.addEventListener('pagehide',()=>flush());
+ document.addEventListener('click',()=>{if(!persistenceAsked&&navigator.storage?.persist){persistenceAsked=true;navigator.storage.persist().catch(()=>{});}}, {once:true});
+ const initialized=initialize();
+ return {schedule,flush,snapshot,validate,apply,pack,unpack,initialized,importFile,isDirty:()=>blocked||!!running||signature(snapshot())!==lastSignature};
+})();
+
+</script></body></html>
