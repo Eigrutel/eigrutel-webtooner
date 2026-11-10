@@ -115,13 +115,16 @@ dialog h2{color:#7F2D30}
 textarea{width:100%;resize:vertical;font:inherit;color:var(--text);background:white;border:1px solid var(--line);border-radius:8px;padding:9px}
 .rights-template{padding:12px 0;border-top:1px solid var(--line)}.rights-template h3{font-size:14px;margin:0 0 8px;color:var(--ink)}.rights-template .bar{margin-top:8px}
 #a-strip .a-row{position:relative;width:100%;line-height:0;overflow:hidden}
-#a-strip .a-row>img{position:absolute;top:0;height:100%;display:block;max-width:none;margin:0}
+#a-strip .a-row>img,#a-strip .a-panel-edit{position:absolute;top:0;height:100%;display:block;max-width:none;margin:0}
+#a-strip .a-panel-edit{padding:0;border:0;border-radius:0;background:transparent}
+#a-strip .a-panel-edit:focus-visible{outline-offset:-3px}
+#a-strip .a-panel-edit img{display:block;width:100%;height:100%;margin:0}
 #a-strip svg{display:block;width:100%;height:auto;overflow:hidden;pointer-events:none}
 #a-strip .a-row>svg{position:absolute;inset:0;width:100%;height:100%}
 #a-strip img+img{margin-top:0}
 #a-status.error{color:#7F2D30;font-weight:650}
 </style></head><body>
-<header><div class="brand"><h1>webtooner</h1><span class="muted">Eigrutel Lab</span></div><div class="bar"><button id="goAssembly" data-t="assemblyJump">Assemblage</button><button id="help" aria-label="Mode d’emploi">i</button><button id="language">EN</button></div></header>
+<header><div class="brand"><h1>webtooner</h1><span class="muted">Eigrutel Lab</span></div><div class="bar"><button id="goAssembly" data-t="assemblyJump">Assemblage</button><button id="resetProject" type="button" data-t="resetProject">Réinitialiser</button><button id="help" aria-label="Mode d’emploi">i</button><button id="language">EN</button></div></header>
 <main><div class="project-bar"><span id="saveStatus" role="status" aria-live="polite"></span><div class="bar"><button id="saveProject" class="small" data-t="saveProject">Télécharger le projet</button><label class="btn small" style="margin:0"><span data-t="openProject">Ouvrir un projet</span><input type="file" id="projectFile" accept=".webtooner,application/json" hidden></label><button id="previousProject" class="small" data-t="previousProject" disabled>Version précédente</button></div></div><section class="panel"><div class="head"><h2 data-t="sourceTitle">1. Délimiter une case</h2><span id="sourceInfo" class="muted"></span></div><div class="bar tools" id="sourceTools"><label class="btn primary" style="margin:0;color:white"><span data-t="load">Charger une image</span><input id="file" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" hidden></label><button id="newRect" data-t="newRect">Nouvelle zone</button><button id="all" data-t="all">Image entière</button><button id="store" class="red" data-t="store" disabled>Mémoriser la case</button><span id="storedCount" class="stored-count" role="status" aria-live="polite">0 case mémorisée</span></div>
 <div id="cropHome"><div id="cropSurface">
 <div id="cropControls"><div class="bar crop-toolbar">
@@ -267,11 +270,24 @@ $('focusApply').onclick=async()=>{
 
 function button(text,fn,title){const b=document.createElement('button');b.type='button';b.className='small';b.textContent=text;b.title=title||text;b.onclick=fn;return b;}
 function move(from,to){if(busy||from<0||to<0||to>=cases.length)return;const [item]=cases.splice(from,1);cases.splice(to,0,item);invalidate();renderMemory();}
+// Chaque copie possède ses propres URL et son propre cadrage. Les blobs immuables sont partagés.
+function duplicatePanel(item){
+ if(busy||focusSession||item.isSpacer)return;
+ const index=cases.indexOf(item);
+ if(index<0)return;
+ const id=nextId++;
+ const copy={...item,id,name:(item.name+' '+t('copySuffix')).slice(0,500),url:URL.createObjectURL(item.blob)};
+ if(item.cropSource)copy.cropSource={...item.cropSource,url:URL.createObjectURL(item.cropSource.blob)};
+ if(item.cropRect)copy.cropRect={...item.cropRect};
+ cases.splice(index+1,0,copy);
+ invalidate();renderMemory();
+}
 function renderMemory(){
  window.projectStore?.schedule();
  $('memory').replaceChildren();cases.forEach((item,index)=>{const card=document.createElement('div');card.className='case'+(item.isSpacer?' is-spacer':'');card.draggable=true;card.ondragstart=e=>{if(busy){e.preventDefault();return;}dragCard=item.id;e.dataTransfer.setData('text/plain',String(item.id));card.classList.add('dragging');};card.ondragend=()=>{dragCard=null;card.classList.remove('dragging');};card.ondragover=e=>{if(dragCard!=null)e.preventDefault();};card.ondrop=e=>{e.preventDefault();if(dragCard!=null)move(cases.findIndex(c=>c.id===dragCard),index);dragCard=null;};const im=document.createElement('img');im.src=item.url;im.alt=item.name;im.loading='lazy';im.draggable=false;const name=document.createElement('input');name.value=item.name;name.setAttribute('aria-label',t('name'));name.oninput=()=>{item.name=name.value;invalidate();};const dim=document.createElement('div');dim.className='muted';dim.textContent=item.width+' × '+item.height+' px';dim.title=t('source')+' : '+item.source;const print=document.createElement('div');print.className='muted';print.textContent=(item.width/300*25.4).toFixed(1)+' × '+(item.height/300*25.4).toFixed(1)+' mm / 300 dpi';const bar=document.createElement('div');bar.className='bar';bar.style.marginTop='8px';const up=button('↑',()=>move(index,index-1),t('up'));up.disabled=index===0;const down=button('↓',()=>move(index,index+1),t('down'));down.disabled=index===cases.length-1;bar.append(up,down,button('↓ '+(lang?'File':'Fichier'),()=>runExport(item),t('one')),button('×',()=>{if(busy)return;releasePanel(item);cases.splice(index,1);invalidate();renderMemory();},t('remove')));let thumbnail=im;
  if(!item.isSpacer){thumbnail=document.createElement('button');thumbnail.type='button';thumbnail.className='case-preview';thumbnail.title=t('editCrop');thumbnail.setAttribute('aria-label',t('editCrop')+' : '+item.name);thumbnail.append(im);thumbnail.onclick=()=>openFocus(item);}
  else {thumbnail=document.createElement('div');const label=document.createElement('div');label.className='spacer-label';label.textContent=t('spaceLabel');thumbnail.append(label,im);}
+ if(!item.isSpacer)bar.insertBefore(button(t('duplicatePanel'),()=>duplicatePanel(item)),bar.lastChild);
  bar.insertBefore(button(t('addSpace'),()=>addSpace(index+1)),bar.lastChild);
  card.append(thumbnail,name,dim,print,bar);$('memory').append(card);});
  $('storedCount').textContent=memorySummary();
@@ -300,6 +316,9 @@ $('language').onclick=()=>{if(busy)return;lang=1-lang;try{localStorage.setItem('
 Object.assign(words,{"assemblyJump": ["Assemblage", "Assembly"], "assemblyTitle": ["3. Assemblage Webtoon", "3. Webtoon assembly"], "assemblyHint": ["Les cases mémorisées sont assemblées dans leur ordre. Ajuste l’espace entre elles ; leurs proportions sont conservées.", "Stored panels are assembled in their current order. Adjust the spacing between them; their proportions are preserved."], "importPanels": ["Ajouter des images entières", "Add whole images"], "stripWidth": ["Largeur du bandeau (px)", "Strip width (px)"], "originalWidth": ["Largeur de la première case", "First panel width"], "filename": ["Nom du fichier", "File name"], "fitJpg": ["Réduire la largeur pour le JPG", "Reduce width for JPG"], "createStrip": ["Créer le bandeau", "Create strip"], "pngHint": ["Pour les très longs bandeaux, choisis PNG. Les exports des cases restent indépendants des réglages d’assemblage.", "Choose PNG for very long strips. Individual panel exports use their own settings."]});
 
 Object.assign(words,{
+ resetProject:['Réinitialiser','Reset'],
+ duplicatePanel:['Dupliquer','Duplicate'],
+ copySuffix:['(copie)','(copy)'],
  panelSpacing:['Espacement des cases (px)','Panel spacing (px)'],
  spacingHint:['0 px : cases jointives. Espace ajouté entre les cases à la largeur d’export, sans marge en haut ni en bas.','0 px: adjoining panels. Spacing is added between panels at the export width, with no top or bottom margin.']
 });
@@ -348,7 +367,15 @@ function svgText(svg,text,x,y,size,colour,opacity=1){const el=document.createEle
 function newSVG(width,height){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 '+width+' '+height);svg.setAttribute('aria-hidden','true');return svg;}
 function updateAssemblyPreview(p){
  $('a-watermarkValue').textContent=$('a-watermarkOpacity').value+' %';const strip=$('a-strip');strip.replaceChildren();
- for(const row of p.rows){const div=document.createElement('div');div.className='a-row';div.style.aspectRatio=p.width+' / '+row.scaledHeight;div.style.marginTop=(row.before/p.width*100)+'%';const im=document.createElement('img');im.src=row.url;im.alt=row.name;im.loading='lazy';im.style.left=(p.margin/p.width*100)+'%';im.style.width=(p.contentWidth/p.width*100)+'%';div.append(im);
+ for(const row of p.rows){const div=document.createElement('div');div.className='a-row';div.style.aspectRatio=p.width+' / '+row.scaledHeight;div.style.marginTop=(row.before/p.width*100)+'%';const im=document.createElement('img');im.src=row.url;im.alt=row.name;im.loading='lazy';im.draggable=false;
+  let panel=im;
+  if(!row.isSpacer){
+   panel=button('',()=>{const item=cases.find(c=>c.id===row.id);if(item)openFocus(item);},t('editCrop'));
+   panel.className='a-panel-edit';
+   panel.setAttribute('aria-label',t('editCrop')+' : '+row.name);
+   panel.append(im);
+  }
+  panel.style.left=(p.margin/p.width*100)+'%';panel.style.width=(p.contentWidth/p.width*100)+'%';div.append(panel);
   const w=watermarkLayout(p,row);if(w){const svg=newSVG(p.width,row.scaledHeight);svgText(svg,w.text,w.x,row.scaledHeight/2,w.size,w.colour,w.opacity);div.append(svg);}strip.append(div);
  }
  if(p.rows.length&&p.rights.height){const f=p.rights,svg=newSVG(p.width,f.height);f.lines.forEach((line,i)=>svgText(svg,line,p.width/2,f.pad+(i+.5)*f.lineHeight,f.size,f.colour));strip.append(svg);}
@@ -473,6 +500,7 @@ translate();
 // Local project journal: the previous committed snapshot survives failed writes.
 window.projectStore=(()=>{
  const controlIds=['profile','edge','format','jpegQuality','margin','marginSize','background','alpha','batchName','a-exportMode','a-target','a-pieceHeight','a-width','a-gap','a-format','a-quality','a-background','a-transparent','a-filename','a-rights','a-rightsSize','a-rightsColour','a-watermarkOn','a-watermark','a-watermarkOpacity','a-watermarkSize','a-watermarkColour'];
+ const initialControls=snapshotControls();
  let db=null,ready=false,restoring=true,blocked=false,timer=null,running=null,revision=0,lastValid=null,headToken=null,lastSignature='',hasPrevious=false,persistenceAsked=false,recoveredFallback=false;
  const blobIds=new WeakMap(),normalizedBlobs=new WeakMap();let blobSerial=0;
  function mediaBlob(b,name=''){if(!b||/^image\/(png|jpeg|webp)$/.test(b.type))return b;if(!normalizedBlobs.has(b)){const ext=String(name).split('.').pop().toLowerCase(),type=ext==='png'?'image/png':ext==='webp'?'image/webp':'image/jpeg';normalizedBlobs.set(b,new Blob([b],{type}));}return normalizedBlobs.get(b);}
@@ -480,9 +508,10 @@ window.projectStore=(()=>{
  const savedText=()=>recoveredFallback?(lang?'Previous version restored':'Version précédente restaurée'):(lang?'Saved on this device':'Enregistré sur cet appareil');
  function signature(value){return JSON.stringify(value,(key,v)=>{if(key==='savedAt'||key==='token')return undefined;if(v instanceof Blob){if(!blobIds.has(v))blobIds.set(v,++blobSerial);return {blob:blobIds.get(v)};}return v;});}
  function view(){return {rect:{...rect},selectionLocked,panning,zoom:$('zoom').value,scrollTop:$('stage').scrollTop,scrollLeft:$('stage').scrollLeft};}
+ function snapshotControls(){return Object.fromEntries(controlIds.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]));}
  function snapshot(){
   const main=focusSession?{rect:{...focusSession.rect},selectionLocked:focusSession.selectionLocked,panning:focusSession.panning,zoom:focusSession.zoom,scrollTop:focusSession.scrollTop,scrollLeft:focusSession.scrollLeft}:view();
-  return {format:'eigrutel-webtooner',version:1,appVersion:'1.0.0',lang,controls:Object.fromEntries(controlIds.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value])),source:sourceBlob?{blob:mediaBlob(sourceBlob,sourceName),name:focusSession?focusSession.sourceName:sourceName}:null,view:main,focus:focusSession?{panelId:focusSession.item.id,...view()}:null,panels:cases.map(c=>({id:c.id,name:c.name,width:c.width,height:c.height,blob:mediaBlob(c.blob,c.source),source:c.source,isSpacer:!!c.isSpacer,cropRect:c.cropRect?{...c.cropRect}:null,cropSource:c.cropSource?{blob:mediaBlob(c.cropSource.blob,c.source),width:c.cropSource.width,height:c.cropSource.height}:null}))};
+  return {format:'eigrutel-webtooner',version:1,appVersion:'1.0.0',lang,controls:snapshotControls(),source:sourceBlob?{blob:mediaBlob(sourceBlob,sourceName),name:focusSession?focusSession.sourceName:sourceName}:null,view:main,focus:focusSession?{panelId:focusSession.item.id,...view()}:null,panels:cases.map(c=>({id:c.id,name:c.name,width:c.width,height:c.height,blob:mediaBlob(c.blob,c.source),source:c.source,isSpacer:!!c.isSpacer,cropRect:c.cropRect?{...c.cropRect}:null,cropSource:c.cropSource?{blob:mediaBlob(c.cropSource.blob,c.source),width:c.cropSource.width,height:c.cropSource.height}:null}))};
  }
  function validate(p){
   const fail=()=>{throw Error(lang?'Invalid or incomplete project.':'Projet invalide ou incomplet.');};
@@ -567,6 +596,24 @@ window.projectStore=(()=>{
   finally{setBusy(false);restoring=false;$('projectFile').value='';if(imported)schedule();}
  }
  async function restorePrevious(){if(!db||busy||!hasPrevious)return;if(!confirm(lang?'Restore the previous saved version?':'Restaurer la version enregistrée précédente ?'))return;clearTimeout(timer);if(running)await running;setBusy(true);restoring=true;let restored=false;try{const p=await read('previous');await apply(p);lastSignature='';restored=true;}catch(e){status('error',lang?'Previous version unavailable.':'Version précédente indisponible.');}finally{setBusy(false);restoring=false;if(restored)schedule();}}
+ async function resetProject(){
+  if(!ready||busy||focusSession)return;
+  if(!confirm(lang?'Reset the current project? The loaded image and stored panels will be cleared and the settings reset.':'Réinitialiser le projet en cours ? L’image chargée et les cases mémorisées seront retirées, et les réglages remis à zéro.'))return;
+  const header=$('resetProject').closest('header'),main=document.querySelector('main');
+  header.inert=main.inert=true;
+  try{
+   // Valider le travail en cours avant de le remplacer dans le journal.
+   if((cases.length||sourceBlob)&&!await flush()&&!confirm(lang?'The current project could not be saved. Reset anyway?':'Le projet en cours n’a pas pu être sauvegardé. Réinitialiser quand même ?'))return;
+   setBusy(true);
+   await apply({format:'eigrutel-webtooner',version:1,lang,controls:initialControls,source:null,view:{rect:{x:0,y:0,w:1,h:1}},panels:[]});
+   setBusy(false);
+   await flush();
+  }finally{
+   if(busy)setBusy(false);
+   header.inert=main.inert=false;
+  }
+ }
+ $('resetProject').onclick=resetProject;
  $('saveProject').onclick=download;$('projectFile').onchange=e=>importFile(e.target.files[0]);$('previousProject').onclick=restorePrevious;
  document.addEventListener('input',e=>{if(e.target.closest('#rightsDialog'))return;schedule();});document.addEventListener('change',()=>schedule());$('stage').addEventListener('scroll',()=>schedule(),{passive:true});
  document.addEventListener('pointerup',()=>{schedule();flush();});document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flush();});window.addEventListener('pagehide',()=>flush());
