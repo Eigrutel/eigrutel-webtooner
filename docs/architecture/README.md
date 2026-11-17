@@ -55,3 +55,7 @@ Ces composants sont des fonctions et groupes de code dans le même fichier, pas 
 ## Principes de maintenance
 
 Conserver les schémas et identifiants de stockage tant qu’aucune migration n’est prévue. Ne pas modifier les fonctions de cadrage à l’occasion d’une simple retouche de présentation. Documenter toute évolution dans `changelog.md`. Conserver les mentions d’auteur et de licence. Les versions dérivées ne doivent pas se présenter comme une publication officielle d’Eigrutel sans autorisation.
+
+## Lecteur ajouté en 1.1.0
+
+Module isolé en fin de script et styles limités à `#readerDialog`. Aucun lien avec les cases du montage ni la sauvegarde IndexedDB. Chargement séquentiel, conversion des aperçus par canvas (480 × 2048 px maximum par segment), URLs Blob révocables et images à chargement différé. Les lots sont préparés avant remplacement ; un échec conserve la lecture précédente. Vider annule le lot et libère les références des images.

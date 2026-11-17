@@ -43,3 +43,10 @@ Des tests locaux JavaScript ont été exécutés avec simulation du DOM, Canvas 
 ## Évolution de version
 
 Mettre à jour le commentaire d’en-tête, `appVersion` dans les sauvegardes, les métadonnées et le numéro visible de la présentation, puis le README et le changelog. Ne changer la version du schéma que si son format change réellement et avec une migration documentée. Les textes normatifs des licences doivent rester intacts.
+
+## Validation de la version 1.1.0
+
+- Analyse syntaxique de tout le JavaScript et contrôle des identifiants HTML.
+- Tests de logique avec objets navigateur simulés : réduction à 480 px, découpage en segments, ordre multi-images, libération des URLs Blob, vidage pendant le chargement.
+- Contrôle des liens locaux et comparaison des fichiers avec l’archive 1.0.0.
+- Le lecteur a été validé par l’utilisateur dans la conversation. Les tests automatisés ci-dessus ne constituent pas une mesure de mémoire ni un test de rendu navigateur ; le lancement du navigateur de test est indisponible dans cet environnement.
