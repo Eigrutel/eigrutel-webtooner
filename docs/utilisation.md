@@ -1,4 +1,4 @@
-# Utiliser webtooner 1.0.0
+# Utiliser webtooner 1.1.0
 
 ## 1. Charger et découper
 
@@ -57,3 +57,16 @@ Choose a whole-strip export or numbered pieces. Set the piece height, create the
 Download a `.webtooner` project to keep an independent backup. Automatic saving is tied to the browser and origin and can be cleared. Use Open project to restore a portable backup.
 
 Copyright © 2026 Simon Léturgie / Eigrutel Lab / Eigrutel BD Academy. Documentation CC BY-SA 4.0.
+
+## Lecteur Webtoon
+
+1. Ouvrir **Lecteur**, après le bouton de langue.
+2. Utiliser **Charger des images** pour sélectionner un ou plusieurs fichiers PNG, JPG/JPEG ou autres formats reconnus par le navigateur. Les fichiers remplacent la lecture en cours, dans l’ordre naturel de leurs noms (1, 2, 10).
+3. Utiliser **URL** pour saisir l’adresse directe d’une image puis **Ajouter** pour la placer à la suite. Une adresse de page web ne convient pas.
+4. Faire défiler la colonne de lecture. Utiliser **En haut** pour revenir au début.
+5. Utiliser **Vider** pour retirer les images, annuler le chargement en cours et libérer les ressources du lecteur.
+6. Fermer la fenêtre pour revenir au montage. La lecture reste disponible pendant cette session ; elle n’est pas enregistrée dans le projet.
+
+Les aperçus sont réduits à 480 px de large au maximum, sans agrandissement du fichier source, puis encodés en WebP lorsque le navigateur le permet (PNG de repli). Les longues images sont divisées en segments de 2048 px de haut au maximum, chargés à la demande. Les fichiers d’origine ne sont pas modifiés. Le traitement s’effectue une image à la fois pour limiter la mémoire nécessaire ; le décodage initial d’une très grande image peut néanmoins demander beaucoup de mémoire.
+
+Les images distantes nécessitent une connexion. Si leur serveur empêche l’optimisation, le lecteur tente un affichage direct et le signale. Certains sites empêchent aussi cet affichage.
