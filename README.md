@@ -1,6 +1,6 @@
 # webtooner
 
-**Version stable 1.0.0 • 15 octobre 2026**
+**Version stable 1.1.0 • 17 novembre 2026**
 
 Eigrutel Lab - Atelier d’outils libres pour la bande dessinée.
 Programme conçu et développé par **Simon Léturgie** dans le cadre d’**Eigrutel BD Academy**.
@@ -32,11 +32,14 @@ L’export conserve le travail en cours pour produire d’autres formats.
 | Exports | JPG/PNG, cases individuelles, ZIP de cases, bandeau entier, ZIP de morceaux |
 | Formats de publication | Hauteur réglable, préréglages WEBTOON et Tapas, alertes de limites |
 | Projets | Sauvegarde automatique locale, version précédente, fichier portable `.webtooner` |
+| Lecteur | Images multiples PNG/JPG, URL directe, défilement vertical, aperçus légers, bouton Vider |
 | Langues | Français et anglais |
+
+Le bouton **Lecteur**, après le choix de langue, permet de lire des images locales ou distantes indépendamment du montage.
 
 ## Données et sauvegarde
 
-Les images sont traitées dans le navigateur. Le programme ne les envoie à aucun serveur et n’intègre ni traceur ni télémétrie. Les liens externes ne s’ouvrent qu’à votre initiative.
+Les images sont traitées dans le navigateur. Le programme ne les envoie à aucun serveur et n’intègre ni traceur ni télémétrie. Le chargement d’une URL dans le lecteur contacte le serveur hébergeant cette image. Les images du lecteur restent en mémoire pour la session et ne sont pas incluses dans les sauvegardes du projet.
 
 Le travail est enregistré dans IndexedDB sur le navigateur et l’origine utilisés. Un changement d’adresse, de navigateur, d’appareil ou l’effacement des données peut rendre cette copie inaccessible. L’ouverture en fichier local dépend des politiques du navigateur. **Télécharger le projet** produit une sauvegarde indépendante avec les images ; **Ouvrir un projet** permet de la reprendre ailleurs. Les images exportées ne remplacent pas ce fichier de travail.
 
@@ -53,7 +56,6 @@ Le travail est enregistré dans IndexedDB sur le navigateur et l’origine utili
 | `docs/utilisation.md` | Notice d’utilisation |
 | `docs/architecture/` | Architecture, données, exports et validation |
 | `docs/publication-github.md` | Dépôt, GitHub Pages et release |
-| `docs/release-1.0.0.md` | Texte prêt pour la première release |
 
 ## Limites et validation
 
@@ -76,10 +78,12 @@ Voir [license.md](license.md) et [notice.md](notice.md).
 
 ## English
 
-**webtooner 1.0.0** is a standalone, bilingual tool for cropping comic panels, arranging a vertical webtoon and exporting either a complete strip or numbered image pieces in a ZIP file.
+**webtooner 1.1.0** is a standalone, bilingual tool for cropping comic panels, arranging a vertical webtoon and exporting either a complete strip or numbered image pieces in a ZIP file.
 
 Open `webtooner.html` in a recent browser. No account, build step, backend or third-party library is required. All artwork processing stays on your device. Local automatic saving uses IndexedDB; download a `.webtooner` project for a portable backup including images. Browser storage can be cleared or become unavailable.
 
 The app includes crop locking, focus editing, panel spacing, side margins, translucent watermarks, a rights footer, PNG/JPG exports and WEBTOON/Tapas presets. Platform limits may change. Fixed-height splitting can cut through artwork or lettering. iPad visual and touch validation remains pending.
+
+The integrated reader accepts multiple local images (including PNG and JPEG) and direct image URLs. Local files replace the current reading in natural filename order; URLs append an image. Optimized previews are limited to 480 px wide and split into lazy-loaded segments. Clear releases reader resources. Remote images are optimized when their server permits it; otherwise direct display is used with a notice. Reader images are session-only and excluded from project backups.
 
 Created by Simon Léturgie for Eigrutel BD Academy and Eigrutel Lab. Code: AGPL-3.0-or-later. Documentation/templates: CC-BY-SA-4.0. Eigrutel brands reserved. User artwork retains its own rights.

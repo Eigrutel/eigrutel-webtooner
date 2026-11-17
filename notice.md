@@ -5,7 +5,7 @@
 ### Projet
 
 **webtooner**  
-Version 1.0.0 - 15 octobre 2026
+Version 1.1.0 - 17 novembre 2026
 
 Ce programme fait partie d’**Eigrutel Lab - Atelier d’outils libres pour la bande dessinée**.
 
@@ -77,7 +77,7 @@ Les textes complets des licences applicables doivent être consultés dans les f
 ### Project
 
 **webtooner**  
-Version 1.0.0 - 15 October 2026
+Version 1.1.0 - 17 November 2026
 
 This program is part of **Eigrutel Lab - Free Tools Workshop for Comics**.
 

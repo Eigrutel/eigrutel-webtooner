@@ -3,6 +3,28 @@
 Toutes les modifications importantes de **webtooner** sont documentées ici.
 Le format s’inspire de [Keep a Changelog](https://keepachangelog.com/fr/1.1.0/). Le projet adopte le [versionnage sémantique](https://semver.org/lang/fr/).
 
+## [1.1.0] - 2026-11-17
+
+### Ajouté
+
+- Lecteur Webtoon intégré accessible après le bouton de langue, avec interface FR/EN.
+- Chargement de plusieurs images locales, notamment PNG et JPG/JPEG, dans l’ordre naturel de leurs noms.
+- Ajout d’images par URL directe, à la suite de la lecture.
+- Colonne de lecture étroite sur fond sombre, barre de défilement fine, progression et retour en haut.
+- Bouton Vider pour retirer les images et annuler un chargement en cours.
+
+### Optimisé
+
+- Aperçus limités à 480 px de large et segments de 2048 px de haut au maximum.
+- Compression WebP lorsque disponible, chargement différé des segments et traitement séquentiel des sources.
+- Libération des ressources des originaux après conversion et des aperçus lors du vidage ou du remplacement.
+- Affichage direct de repli pour les images distantes dont le serveur bloque l’optimisation, avec un message explicatif.
+
+### Documentation
+
+- Présentation, guide utilisateur, documentation technique et version de l’application actualisés.
+- Format des projets et sauvegardes inchangé ; la lecture est indépendante du montage et n’est pas sauvegardée dans le projet.
+
 ## [1.0.0] - 2026-10-15
 
 Première version stable publique. Les numéros utilisés pendant la préparation ne constituent pas un historique de versions publiques.
@@ -37,6 +59,11 @@ Première version stable publique. Les numéros utilisés pendant la préparatio
 - Marques, logos et signes distinctifs Eigrutel, Eigrutel Lab et Eigrutel BD Academy réservés.
 
 ## English summary
+
+### [1.1.0] - 2026-11-17
+
+Integrated bilingual Webtoon reader with multiple local images, natural filename ordering, direct image URLs, a thin scrollbar, reading progress, back-to-top and Clear controls. Lightweight previews use a maximum width of 480 px, sequential processing and lazy-loaded segments up to 2048 px tall. Original files remain unchanged. Remote optimization depends on server permissions, with direct display as a fallback. Project format is unchanged; reader images are session-only.
+
 
 ### [1.0.0] - 2026-10-15
 

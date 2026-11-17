@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- Eigrutel Lab - Atelier d'outils libres pour la bande dessinée Programme conçu et développé par Simon Léturgie dans le cadre d'Eigrutel BD Academy. Nom : webtooner Version : 1.0.0 Date : 15-10-2026
+<!-- Eigrutel Lab - Atelier d'outils libres pour la bande dessinée Programme conçu et développé par Simon Léturgie dans le cadre d'Eigrutel BD Academy. Nom : webtooner Version : 1.1.0 Date : 17-11-2026
 JJ Code : GNU AGPL v3.0 ou version ultérieure. Documentation et modèles : CC BY-SA 4.0,
 sauf mention contraire. Marques, logos et signes distinctifs Eigrutel / Eigrutel Lab / Eigrutel BD Academy : réservés. -->
 <html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>webtooner  :  Eigrutel Lab</title>
@@ -123,8 +123,34 @@ textarea{width:100%;resize:vertical;font:inherit;color:var(--text);background:wh
 #a-strip .a-row>svg{position:absolute;inset:0;width:100%;height:100%}
 #a-strip img+img{margin-top:0}
 #a-status.error{color:#7F2D30;font-weight:650}
+</style><style>
+/* Lecteur indépendant : styles limités à sa fenêtre, sans toucher au projet. */
+#readerDialog{--r-bg:#0c0c0f;--r-bar:#15151b;--r-text:#e7e9f5;--r-muted:#9ca0b5;width:min(920px,96vw);max-width:920px;height:92vh;height:92dvh;max-height:96dvh;padding:0;overflow:hidden;background:var(--r-bg);color:var(--r-text);border:1px solid #40404b;border-radius:18px}
+#readerDialog[open]{display:flex;flex-direction:column}
+#readerDialog .r-toolbar{display:flex;align-items:center;gap:8px;padding:12px 14px;background:var(--r-bar);flex-shrink:0;flex-wrap:wrap}
+#readerDialog .r-title{flex:1;min-width:100px;font-size:15px;margin:0;color:var(--r-text)}
+#readerDialog button{background:transparent;color:var(--r-text);border-color:#7776;font-size:12px;padding:7px 10px;min-height:36px}
+#readerDialog button:hover{background:#8882}
+#readerDialog .r-progress{height:3px;background:#7773;flex-shrink:0}
+#readerProgress{height:100%;width:0;background:linear-gradient(90deg,#ffcc33,#ff9933)}
+#readerSources{padding:12px 14px;background:var(--r-bar);border-top:1px solid #7773;flex-shrink:0}
+#readerSources label{color:var(--r-muted);margin:0 0 6px}
+#readerSources form{display:flex;gap:8px}
+#readerUrl{flex:1;min-width:0;background:var(--r-bg);color:var(--r-text);border-color:#7776;font-size:16px}
+#readerHint,#readerStatus{font-size:12px;color:var(--r-muted);margin:8px 0 0;overflow-wrap:anywhere}
+#readerStatus:empty{display:none}
+#readerStatus.r-error{color:#ef9494}
+#readerViewport{flex:1;min-height:0;overflow-y:scroll;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:#777783 #15151b;scrollbar-gutter:stable;overscroll-behavior:contain;touch-action:pan-y pinch-zoom}
+#readerViewport::-webkit-scrollbar{width:6px}
+#readerViewport::-webkit-scrollbar-track{background:#15151b}
+#readerViewport::-webkit-scrollbar-thumb{background:#777783;border-radius:6px}
+#readerColumn{width:100%;max-width:480px;margin:0 auto;min-height:100%}
+#readerColumn img{display:block;width:100%;height:auto;background:white}
+#readerEmpty{padding:70px 24px;text-align:center;color:var(--r-muted);font-size:14px}
+#readerCaption{max-width:480px;margin:auto;padding:9px 14px;color:var(--r-muted);font-size:11px;overflow-wrap:anywhere}
+@media(max-width:600px){header{flex-wrap:wrap}header .bar{flex-wrap:wrap}#readerDialog{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border:0;border-radius:0}#readerDialog .r-toolbar{padding:8px;gap:5px}#readerDialog .r-title{flex-basis:100%}#readerSources{padding:10px}}
 </style></head><body>
-<header><div class="brand"><h1>webtooner</h1><span class="muted">Eigrutel Lab</span></div><div class="bar"><button id="goAssembly" data-t="assemblyJump">Assemblage</button><button id="resetProject" type="button" data-t="resetProject">Réinitialiser</button><button id="help" aria-label="Mode d’emploi">i</button><button id="language">EN</button></div></header>
+<header><div class="brand"><h1>webtooner</h1><span class="muted">Eigrutel Lab</span></div><div class="bar"><button id="goAssembly" data-t="assemblyJump">Assemblage</button><button id="resetProject" type="button" data-t="resetProject">Réinitialiser</button><button id="help" aria-label="Mode d’emploi">i</button><button id="language">EN</button><button id="openReader" type="button" data-t="readerOpen">Lecteur</button></div></header>
 <main><div class="project-bar"><span id="saveStatus" role="status" aria-live="polite"></span><div class="bar"><button id="saveProject" class="small" data-t="saveProject">Télécharger le projet</button><label class="btn small" style="margin:0"><span data-t="openProject">Ouvrir un projet</span><input type="file" id="projectFile" accept=".webtooner,application/json" hidden></label><button id="previousProject" class="small" data-t="previousProject" disabled>Version précédente</button></div></div><section class="panel"><div class="head"><h2 data-t="sourceTitle">1. Délimiter une case</h2><span id="sourceInfo" class="muted"></span></div><div class="bar tools" id="sourceTools"><label class="btn primary" style="margin:0;color:white"><span data-t="load">Charger une image</span><input id="file" type="file" accept="image/png,image/jpeg,image/webp,.png,.jpg,.jpeg,.webp" hidden></label><button id="newRect" data-t="newRect">Nouvelle zone</button><button id="all" data-t="all">Image entière</button><button id="store" class="red" data-t="store" disabled>Mémoriser la case</button><span id="storedCount" class="stored-count" role="status" aria-live="polite">0 case mémorisée</span></div>
 <div id="cropHome"><div id="cropSurface">
 <div id="cropControls"><div class="bar crop-toolbar">
@@ -162,6 +188,31 @@ textarea{width:100%;resize:vertical;font:inherit;color:var(--text);background:wh
 </dialog>
 <dialog id="rightsDialog" aria-labelledby="rightsTitle"><div class="head"><h2 id="rightsTitle" data-t="rightsLabel">Droits / copyright / CC</h2><button id="closeRights" data-t="closeEditor">Fermer</button></div><div id="rightsTemplates"></div><a href="https://creativecommons.org/chooser/" target="_blank" rel="noopener" data-t="ccChooser">Choisir une licence Creative Commons</a></dialog>
 <dialog id="manual"><div class="head"><h2 data-t="manualTitle">webtooner : mode d’emploi</h2><button id="closeHelp">×</button></div><div id="manualText"></div></dialog><footer class="eba-footer"><a href="https://www.stripmee.com/eigrutel-bd-academy-2/" target="_blank" rel="noopener">Eigrutel BD Academy</a></footer>
+
+<dialog id="readerDialog" aria-labelledby="readerTitle">
+ <div class="r-toolbar">
+  <h2 class="r-title" id="readerTitle" data-t="readerTitle">Lecteur Webtoon</h2>
+  <button id="readerFileButton" type="button" data-t="readerFile">Charger des images</button>
+  <button id="readerUrlButton" type="button" aria-expanded="true" aria-controls="readerSources">URL</button>
+  <button id="readerClear" type="button" data-t="readerClear">Vider</button>
+  <button id="readerTop" type="button" data-t="readerTop">En haut</button>
+  <button id="readerClose" type="button" data-t="readerClose">Fermer</button>
+ </div>
+ <div class="r-progress" aria-hidden="true"><div id="readerProgress"></div></div>
+ <div id="readerSources">
+  <form id="readerUrlForm">
+   <div style="flex:1;min-width:0"><label for="readerUrl" data-t="readerUrlLabel">Adresse directe de l’image</label><input id="readerUrl" type="url" placeholder="https://…/image.png" required></div>
+   <button type="submit" data-t="readerLoad" style="align-self:end">Charger</button>
+  </form>
+  <p id="readerHint" data-t="readerHint">Utiliser l’adresse d’une image, pas celle d’une page web.</p>
+ </div>
+ <div style="padding:0 14px"><p id="readerStatus" role="status" aria-live="polite"></p></div>
+ <input id="readerFile" type="file" accept="image/*" multiple hidden>
+ <div id="readerViewport" tabindex="0" role="region" aria-labelledby="readerTitle">
+  <div id="readerColumn"><div id="readerEmpty" data-t="readerEmpty">Charger une image ou saisir son URL pour commencer la lecture.</div></div>
+  <div id="readerCaption"></div>
+ </div>
+</dialog>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);
@@ -511,7 +562,7 @@ window.projectStore=(()=>{
  function snapshotControls(){return Object.fromEntries(controlIds.map(id=>[id,$(id).type==='checkbox'?$(id).checked:$(id).value]));}
  function snapshot(){
   const main=focusSession?{rect:{...focusSession.rect},selectionLocked:focusSession.selectionLocked,panning:focusSession.panning,zoom:focusSession.zoom,scrollTop:focusSession.scrollTop,scrollLeft:focusSession.scrollLeft}:view();
-  return {format:'eigrutel-webtooner',version:1,appVersion:'1.0.0',lang,controls:snapshotControls(),source:sourceBlob?{blob:mediaBlob(sourceBlob,sourceName),name:focusSession?focusSession.sourceName:sourceName}:null,view:main,focus:focusSession?{panelId:focusSession.item.id,...view()}:null,panels:cases.map(c=>({id:c.id,name:c.name,width:c.width,height:c.height,blob:mediaBlob(c.blob,c.source),source:c.source,isSpacer:!!c.isSpacer,cropRect:c.cropRect?{...c.cropRect}:null,cropSource:c.cropSource?{blob:mediaBlob(c.cropSource.blob,c.source),width:c.cropSource.width,height:c.cropSource.height}:null}))};
+  return {format:'eigrutel-webtooner',version:1,appVersion:'1.1.0',lang,controls:snapshotControls(),source:sourceBlob?{blob:mediaBlob(sourceBlob,sourceName),name:focusSession?focusSession.sourceName:sourceName}:null,view:main,focus:focusSession?{panelId:focusSession.item.id,...view()}:null,panels:cases.map(c=>({id:c.id,name:c.name,width:c.width,height:c.height,blob:mediaBlob(c.blob,c.source),source:c.source,isSpacer:!!c.isSpacer,cropRect:c.cropRect?{...c.cropRect}:null,cropSource:c.cropSource?{blob:mediaBlob(c.cropSource.blob,c.source),width:c.cropSource.width,height:c.cropSource.height}:null}))};
  }
  function validate(p){
   const fail=()=>{throw Error(lang?'Invalid or incomplete project.':'Projet invalide ou incomplet.');};
@@ -620,6 +671,85 @@ window.projectStore=(()=>{
  document.addEventListener('click',()=>{if(!persistenceAsked&&navigator.storage?.persist){persistenceAsked=true;navigator.storage.persist().catch(()=>{});}}, {once:true});
  const initialized=initialize();
  return {schedule,flush,snapshot,validate,apply,pack,unpack,initialized,importFile,isDirty:()=>blocked||!!running||signature(snapshot())!==lastSignature};
+})();
+
+
+// Le lecteur conserve sa lecture en session, sans modifier ni sauvegarder le projet.
+(()=>{
+ Object.assign(words,{
+ readerClear:['Vider','Clear'],readerRemote:['Ce site empêche l’optimisation : l’image distante est affichée à sa taille de lecture.','This site prevents optimization: the remote image is displayed at reading size.'],readerOpen:['Lecteur','Reader'],readerTitle:['Lecteur Webtoon','Webtoon reader'],readerFile:['Charger des images','Load images'],readerTop:['En haut','Top'],readerClose:['Fermer','Close'],readerUrlLabel:['Adresse directe de l’image','Direct image URL'],readerLoad:['Ajouter','Add'],readerHint:['Sélectionner plusieurs fichiers pour charger un webtoon, dans l’ordre de leurs noms. Chaque URL directe ajoute une image à la suite.','Select multiple files to load a webtoon in filename order. Each direct URL appends an image.'],readerEmpty:['Charger une ou plusieurs images, ou saisir une URL pour commencer la lecture.','Load one or more images, or enter a URL to start reading.'],readerLoading:['Chargement…','Loading…'],readerError:['Impossible de charger cette image. Vérifier le fichier ou l’URL directe ; certains sites bloquent l’affichage externe.','Unable to load this image. Check the file or direct URL; some sites block external display.'],readerInvalid:['Saisir une adresse commençant par https:// ou http://.','Enter an address starting with https:// or http://.']});
+ const dialog=$('readerDialog'),viewport=$('readerViewport');
+ let entries=[],pending=null,previousOverflow='';
+ const status=(key,error=false)=>{$('readerStatus').textContent=key?t(key):'';$('readerStatus').classList.toggle('r-error',error);};
+ const progress=()=>{const max=viewport.scrollHeight-viewport.clientHeight;$('readerProgress').style.width=(max>0?Math.min(100,100*viewport.scrollTop/max):0)+'%';};
+ function release(items){for(const item of items){for(const img of item.images||[]){img.removeAttribute('src');}for(const url of item.urls||[])URL.revokeObjectURL(url);}}
+ function cancelPending(){if(!pending)return;const job=pending;pending=null;job.cancel?.();release(job.items);for(const source of job.sources)if(source.owned)URL.revokeObjectURL(source.url);}
+ function empty(){
+  cancelPending();release(entries);entries=[];
+  const message=document.createElement('div');message.id='readerEmpty';message.dataset.t='readerEmpty';message.textContent=t('readerEmpty');$('readerColumn').replaceChildren(message);
+  $('readerCaption').textContent='';$('readerFile').value='';$('readerUrl').value='';status('');viewport.scrollTop=0;progress();
+ }
+ function decode(source,job,cors){return new Promise((resolve,reject)=>{
+  const img=new Image();let timer;
+  const finish=error=>{clearTimeout(timer);img.onload=img.onerror=null;job.cancel=null;if(error){img.removeAttribute('src');reject(error);}else resolve(img);};
+  job.cancel=()=>finish(Error('cancelled'));img.onload=()=>finish();img.onerror=()=>finish(Error('image'));
+  img.referrerPolicy='no-referrer';if(cors)img.crossOrigin='anonymous';img.decoding='async';
+  timer=setTimeout(()=>finish(Error('timeout')),30000);img.src=source.url;
+ });}
+ // Décoder une seule source à la fois. Les originaux sont libérés après conversion.
+ // Des tuiles de 480 × 2048 au maximum évitent les grands canvas sur iPad.
+ async function optimize(source,job){
+  let img,remoteFallback=false;
+  try{img=await decode(source,job,!source.owned);}catch(error){
+   if(pending!==job||source.owned)throw error;
+   img=await decode(source,job,false);remoteFallback=true;
+  }
+  const entry={name:source.name,images:[],urls:[],remoteFallback};job.items.push(entry);
+  if(remoteFallback){img.alt=source.name;img.loading='lazy';entry.images.push(img);return;}
+  try{
+   const width=Math.min(480,img.naturalWidth),height=Math.max(1,Math.round(img.naturalHeight*width/img.naturalWidth));
+   if(!width||!img.naturalHeight)throw Error('dimensions');
+   const canvas=document.createElement('canvas');
+   try{
+    for(let y=0;y<height;y+=2048){
+     if(pending!==job)throw Error('cancelled');
+     const h=Math.min(2048,height-y);canvas.width=width;canvas.height=h;
+     const ctx=canvas.getContext('2d');if(!ctx)throw Error('canvas');
+     ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+     ctx.drawImage(img,0,y*img.naturalHeight/height,img.naturalWidth,h*img.naturalHeight/height,0,0,width,h);
+     const blob=await new Promise((resolve,reject)=>{try{canvas.toBlob(b=>b?resolve(b):reject(Error('encode')),'image/webp',0.86);}catch(error){reject(error);}});
+     if(pending!==job)throw Error('cancelled');
+     const url=URL.createObjectURL(blob),tile=new Image();entry.urls.push(url);tile.alt=source.name;tile.width=width;tile.height=h;tile.loading='lazy';tile.decoding='async';tile.src=url;entry.images.push(tile);
+    }
+   }finally{canvas.width=canvas.height=1;}
+  }finally{img.removeAttribute('src');if(source.owned)URL.revokeObjectURL(source.url);}
+ }
+ async function loadBatch(sources,append=false){
+  cancelPending();status('readerLoading');const job={items:[],sources,cancel:null};pending=job;
+  try{
+   for(const source of sources){await optimize(source,job);if(pending!==job)return;}
+   pending=null;
+   if(append)entries.push(...job.items);else{release(entries);entries=job.items;}
+   $('readerColumn').replaceChildren(...entries.flatMap(entry=>entry.images));
+   $('readerCaption').textContent=entries.length+' image'+(entries.length===1?'':'s');
+   status(entries.some(entry=>entry.remoteFallback)?'readerRemote':'');$('readerSources').hidden=true;$('readerUrlButton').setAttribute('aria-expanded','false');
+   if(!append)viewport.scrollTop=0;progress();
+  }catch(error){if(pending!==job)return;cancelPending();status('readerError',true);}
+ }
+ $('readerClear').onclick=empty;
+ $('openReader').onclick=()=>{if(dialog.open)return;previousOverflow=document.body.style.overflow;document.body.style.overflow='hidden';status('');dialog.showModal();progress();};
+ $('readerClose').onclick=()=>dialog.close();
+ dialog.addEventListener('close',()=>{cancelPending();status('');document.body.style.overflow=previousOverflow;$('openReader').focus();});
+ $('readerFileButton').onclick=()=>$('readerFile').click();
+ $('readerFile').onchange=e=>{const files=Array.from(e.target.files);e.target.value='';if(!files.length)return;files.sort((a,b)=>a.name.localeCompare(b.name,undefined,{numeric:true,sensitivity:'base'}));loadBatch(files.map(file=>({url:URL.createObjectURL(file),name:file.name,owned:true})));};
+ $('readerUrlButton').onclick=()=>{const box=$('readerSources');box.hidden=!box.hidden;$('readerUrlButton').setAttribute('aria-expanded',String(!box.hidden));if(!box.hidden)$('readerUrl').focus();progress();};
+ $('readerUrlForm').onsubmit=e=>{e.preventDefault();let url;try{url=new URL($('readerUrl').value.trim());if(!['http:','https:'].includes(url.protocol))throw Error();}catch{status('readerInvalid',true);return;}loadBatch([{url:url.href,name:url.pathname.split('/').pop()||url.hostname,owned:false}],true);};
+ $('readerTop').onclick=()=>{viewport.scrollTop=0;progress();};
+ viewport.addEventListener('scroll',progress,{passive:true});new ResizeObserver(progress).observe(viewport);
+ // Les événements du lecteur ne déclenchent pas de sauvegarde du montage.
+ for(const event of ['input','change'])dialog.addEventListener(event,e=>e.stopPropagation());
+ const priorTranslate=translate;translate=()=>{priorTranslate();if(dialog.open)progress();};
+ for(const el of document.querySelectorAll('[data-t^="reader"]'))el.textContent=t(el.dataset.t);
 })();
 
 </script></body></html>
